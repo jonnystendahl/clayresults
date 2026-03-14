@@ -15,6 +15,8 @@ Default development rules:
 - Keep controllers thin and use Form Requests for non-trivial validation.
 - Prefer Eloquent relationships, route model binding, and named routes.
 - Use Blade and Bootstrap 5. Do not introduce React, Vue, Livewire, or Alpine unless explicitly requested.
+- For any task that changes files, start from `main` and create a new branch before editing. Do not work directly on `main`.
+- Use branch names in the format `<type>/<short-kebab-summary>`, where `<type>` usually matches the conventional commit scope, for example `feat/club-renewal-reminders`, `fix/public-club-links`, `docs/release-workflow`, or `chore/dependency-updates`.
 - Use conventional commits when creating git commits, for example `feat: add club home page` or `docs: update setup notes`.
 - Preserve the existing visual direction and avoid replacing Bootstrap with another UI approach.
 - Protect all user-owned data with authorization or ownership checks.
