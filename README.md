@@ -1,15 +1,17 @@
 # ClayResults
 
-ClayResults is a Laravel application for logging clay shooting training results.
+ClayResults is a Laravel application for managing clay shooting clubs, their members, and club communication.
 
-The app is built for multiple users. Each shooter can register an account, save training sessions, and manage only their own results. Administrators can also manage users and decide which users have administrator access.
+The app is built around club management first. Clubs can manage memberships, public club information, news, events, board contacts, and membership renewal flows. Individual training results are still supported, but they are now an extra function within the wider club-management platform.
 
 ## What It Does
 
-- Stores training results with date, discipline, score, and note
-- Keeps each user's results private to their own account
-- Lets administrators manage users
-- Lets administrators mark users as admins or regular users
+- Manages clubs, club memberships, and member roles
+- Supports users belonging to multiple clubs with a selectable main club
+- Publishes club news, events, board information, and membership renewal details
+- Lets administrators manage users and club-related administration flows
+- Stores personal training results as an additional user feature
+- Keeps each user's training results private to their own account
 
 ## Tech Stack
 
