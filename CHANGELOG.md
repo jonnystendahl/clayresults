@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/jonnystendahl/clayresults/compare/v0.1.3...v0.1.4) (2026-03-14)
+
+
+### Bug Fixes
+
+* More quote errors in the release workflow ([7f71829](https://github.com/jonnystendahl/clayresults/commit/7f7182994cdbf8bee45a16730e9381a99764e4d2))
+* quote release workflow PR fields ([6aba495](https://github.com/jonnystendahl/clayresults/commit/6aba4959c3854820e8b10753ec055799a76ce4b6))
+
+
+### Continuous Integration
+
+* switch releases to protected-main workflow ([13586d3](https://github.com/jonnystendahl/clayresults/commit/13586d31e54d755607f2b0b3ce70af42006327c8))
+
+
+### Documentation
+
+* simplify custom agent setup ([d36070c](https://github.com/jonnystendahl/clayresults/commit/d36070c512292cbb2e7d2c421cf17fb2e561e0ed))
+
 ### [0.1.3](https://github.com/jonnystendahl/clayresults/compare/v0.1.2...v0.1.3) (2026-03-14)
 
 
