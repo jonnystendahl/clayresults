@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/jonnystendahl/clayresults/compare/v0.1.4...v0.1.5) (2026-03-14)
+
+
+### Features
+
+* Add random testdata ([4aa8b5c](https://github.com/jonnystendahl/clayresults/commit/4aa8b5c0f38fd450b33075fdc33ab4b4794698e2))
+
 ### [0.1.4](https://github.com/jonnystendahl/clayresults/compare/v0.1.3...v0.1.4) (2026-03-14)
 
 
