@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/jonnystendahl/clayresults/compare/v0.1.1...v0.1.2) (2026-03-14)
+
+
+### Continuous Integration
+
+* run releases automatically on main ([3d9c22a](https://github.com/jonnystendahl/clayresults/commit/3d9c22ab55b4c32d0109af7853970ac3875a1ac2))
+
 ### 0.1.1 (2026-03-14)
 
 
