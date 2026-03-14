@@ -14,19 +14,21 @@ Your job is to help with three kinds of work in this repository:
 3. Suggest new functionality that fits the current product, data model, and server-rendered Laravel architecture.
 
 Follow this workflow:
-1. Inspect the existing routes, controllers, requests, models, Blade views, and feature tests before making recommendations or edits.
-2. Follow Laravel conventions and extend the current structure instead of introducing a new architecture.
-3. Protect user-owned data with ownership checks, authorization, and authenticated routes.
-4. Treat club membership and main-club behavior as first-class domain rules: users may belong to multiple clubs, but any selected main club must still be one of their memberships.
-5. Use Form Requests for non-trivial validation and prefer named routes, route model binding, and Eloquent relationships.
-6. Keep the UI server-rendered with Blade and Bootstrap 5, and preserve the existing visual direction unless asked to redesign it.
-7. When editing homepage or navigation behavior, verify both guest and authenticated club flows, including main club selection and switching between memberships.
-8. When reviewing code, present findings first in severity order with concrete file references, then list open questions or assumptions, and keep summaries brief.
-9. When suggesting new functionality, prioritize ideas that improve club management, membership administration, training logging, personal progress tracking, discipline coverage, and player-facing insights, while also actively considering admin functionality, club manager workflows, club membership features, and other operational features that fit the application's scope.
-10. When product or feature suggestions are actionable and should be preserved in the repository, add them to the repository `TODO.md` file as backlog items unless the user asks to keep the discussion ephemeral.
-11. Add or update feature tests for important user-facing behavior whenever code changes affect auth, CRUD flows, club membership flows, main club rules, or ownership boundaries.
-12. Run relevant verification commands when possible and report any limits clearly if verification cannot be completed.
-13. When creating a git commit, use a conventional commit message that reflects the primary scope of the change.
+1. Before making any file changes, start from `main` and create a new branch for the task. Do not work directly on `main`.
+2. Use branch names in the format `<type>/<short-kebab-summary>`, where `<type>` usually matches the conventional commit type, for example `feat/club-renewal-reminders`, `fix/public-club-links`, `docs/release-workflow`, or `chore/dependency-updates`.
+3. Inspect the existing routes, controllers, requests, models, Blade views, and feature tests before making recommendations or edits.
+4. Follow Laravel conventions and extend the current structure instead of introducing a new architecture.
+5. Protect user-owned data with ownership checks, authorization, and authenticated routes.
+6. Treat club membership and main-club behavior as first-class domain rules: users may belong to multiple clubs, but any selected main club must still be one of their memberships.
+7. Use Form Requests for non-trivial validation and prefer named routes, route model binding, and Eloquent relationships.
+8. Keep the UI server-rendered with Blade and Bootstrap 5, and preserve the existing visual direction unless asked to redesign it.
+9. When editing homepage or navigation behavior, verify both guest and authenticated club flows, including main club selection and switching between memberships.
+10. When reviewing code, present findings first in severity order with concrete file references, then list open questions or assumptions, and keep summaries brief.
+11. When suggesting new functionality, prioritize ideas that improve club management, membership administration, training logging, personal progress tracking, discipline coverage, and player-facing insights, while also actively considering admin functionality, club manager workflows, club membership features, and other operational features that fit the application's scope.
+12. When product or feature suggestions are actionable and should be preserved in the repository, add them to the repository `TODO.md` file as backlog items unless the user asks to keep the discussion ephemeral.
+13. Add or update feature tests for important user-facing behavior whenever code changes affect auth, CRUD flows, club membership flows, main club rules, or ownership boundaries.
+14. Run relevant verification commands when possible and report any limits clearly if verification cannot be completed.
+15. When creating a git commit, use a conventional commit message that reflects the primary scope of the change.
 
 Constraints:
 - Do not introduce React, Vue, Livewire, or Alpine unless explicitly requested.
