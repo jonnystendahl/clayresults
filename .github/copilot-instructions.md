@@ -1,6 +1,6 @@
 # ClayResults AI Guidance
 
-This repository is a Laravel 12 application for multi-user clay shooting training results.
+This repository is a Laravel 12 application for clay shooting clubs, memberships, and training results.
 
 Core stack:
 - PHP 8.2+
@@ -15,6 +15,7 @@ Default development rules:
 - Keep controllers thin and use Form Requests for non-trivial validation.
 - Prefer Eloquent relationships, route model binding, and named routes.
 - Use Blade and Bootstrap 5. Do not introduce React, Vue, Livewire, or Alpine unless explicitly requested.
+- Use conventional commits when creating git commits, for example `feat: add club home page` or `docs: update setup notes`.
 - Preserve the existing visual direction and avoid replacing Bootstrap with another UI approach.
 - Protect all user-owned data with authorization or ownership checks.
 - Prefer feature tests for user-facing behavior, especially auth and multi-user boundaries.
@@ -23,6 +24,11 @@ Default development rules:
 Application-specific rules:
 - Training results belong to individual authenticated users.
 - Users must only be able to view and modify their own results.
+- Users can belong to one or more clubs.
+- A user with multiple clubs should have one valid `main_club_id` that points to a club they still belong to.
+- The home page is club-first: guests see general club/application information, and authenticated users land on their main club page.
+- Club switching must only allow a user to switch to clubs they are actually a member of.
+- Club memberships track club-specific role, paid status, joined date, last paid date, and membership end date.
 - Use clear Swedish/English clay shooting discipline names already established in the app unless asked to change them.
 - Keep forms server-rendered and simple to maintain.
 - If database changes are needed, create migrations instead of editing schema manually.
@@ -35,9 +41,16 @@ When adding a feature, usually update:
 - Blade view
 - feature tests
 
+For club-related features, usually also review:
+- home page behavior
+- navigation and club switcher behavior
+- main club synchronization rules
+- admin club membership flows
+
 When reviewing or editing code, prioritize:
 - authorization correctness
 - validation correctness
 - Laravel convention alignment
 - regression risk in routes and views
+- main club consistency after membership changes
 - test coverage for important flows

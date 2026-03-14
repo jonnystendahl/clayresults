@@ -7,10 +7,12 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClubSelectionController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PublicClubController;
 use App\Http\Controllers\TrainingResultController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/clubs/{club}', [PublicClubController::class, 'show'])->name('clubs.show');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');

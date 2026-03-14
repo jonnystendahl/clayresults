@@ -50,6 +50,7 @@ class HomeController extends Controller
             'clubs' => $user->clubs,
             'mainClub' => $mainClub,
             'mainMembership' => $mainMembership,
+            'menuClub' => $mainClub,
         ]);
     }
 }

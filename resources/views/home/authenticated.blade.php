@@ -128,6 +128,30 @@
                     </div>
                 </div>
 
+                <div class="content-panel p-4 p-lg-5 mb-4" id="club-news">
+                    <div class="section-label mb-2">News</div>
+                    <h2 class="h3 fw-bold mb-3">Club news placeholder</h2>
+                    <p class="text-secondary mb-0">Use this section later for updates from {{ $mainClub->name }}, including shooting calendar changes, range information, seasonal notices, and member communication.</p>
+                </div>
+
+                <div class="content-panel p-4 p-lg-5 mb-4" id="club-events">
+                    <div class="section-label mb-2">Events</div>
+                    <h2 class="h3 fw-bold mb-3">Events and training placeholder</h2>
+                    <p class="text-secondary mb-0">This area can later show training sessions, competitions, workdays, courses, guest events, or booking information tied to your main club.</p>
+                </div>
+
+                <div class="content-panel p-4 p-lg-5 mb-4" id="club-board">
+                    <div class="section-label mb-2">Board information</div>
+                    <h2 class="h3 fw-bold mb-3">Board and official roles placeholder</h2>
+                    <p class="text-secondary mb-0">This can later surface board members, officials, committee roles, and contact details relevant to {{ $mainClub->name }}.</p>
+                </div>
+
+                <div class="content-panel p-4 p-lg-5 mb-4" id="membership-renewal">
+                    <div class="section-label mb-2">Membership renewal</div>
+                    <h2 class="h3 fw-bold mb-3">Renewal and payment placeholder</h2>
+                    <p class="text-secondary mb-0">This section can later explain renewal windows, payment instructions, grace periods, and club-specific membership rules.</p>
+                </div>
+
                 <div class="content-panel p-4 p-lg-5">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                         <div>

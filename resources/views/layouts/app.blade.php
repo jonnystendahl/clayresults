@@ -11,6 +11,7 @@
             $navigationUser = $navigationUser ?? auth()->user();
             $navigationClubs = $navigationUser?->clubs ?? collect();
             $currentMainClub = $navigationUser?->mainClub;
+            $menuClub = $menuClub ?? $currentMainClub ?? null;
         @endphp
 
         <nav class="navbar navbar-expand-lg sticky-top navbar-blur">
@@ -52,6 +53,14 @@
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                                 <li><a class="dropdown-item" href="{{ route('home') }}">Home</a></li>
                                 <li><a class="dropdown-item" href="{{ route('training-results.index') }}">Results</a></li>
+                                @if ($menuClub !== null)
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}">Public club page</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('home') }}#club-news">Club news</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('home') }}#club-events">Events</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('home') }}#club-board">Board information</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('home') }}#membership-renewal">Membership renewal</a></li>
+                                @endif
                                 @if ($navigationUser?->isAdmin())
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Manage users</a></li>
@@ -76,6 +85,14 @@
                                 <li><a class="dropdown-item" href="{{ route('home') }}">Home</a></li>
                                 <li><a class="dropdown-item" href="{{ route('home') }}#club-directory">Clubs in system</a></li>
                                 <li><a class="dropdown-item" href="{{ route('home') }}#app-overview">About the app</a></li>
+                                @if ($menuClub !== null)
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}">Club overview</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#club-news">Club news</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#club-events">Events</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#club-board">Board information</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#membership-renewal">Membership renewal</a></li>
+                                @endif
                                 <li><a class="dropdown-item" href="{{ route('register') }}">Create account</a></li>
                             </ul>
                         </div>

@@ -123,6 +123,10 @@
                                 </div>
 
                                 <div class="small text-secondary">{{ $club->memberships_count }} {{ Str::plural('member', $club->memberships_count) }} tracked in this club.</div>
+
+                                <div class="mt-4 d-flex justify-content-end">
+                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('clubs.show', $club) }}">View club</a>
+                                </div>
                             </div>
                         </div>
                     @endforeach
