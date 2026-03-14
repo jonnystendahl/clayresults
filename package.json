@@ -2,7 +2,7 @@
     "$schema": "https://www.schemastore.org/package.json",
     "name": "clayresults",
     "private": true,
-    "version": "0.1.4",
+    "version": "0.1.5",
     "type": "module",
     "scripts": {
         "build": "vite build",
