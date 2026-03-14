@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/jonnystendahl/clayresults/compare/v0.1.2...v0.1.3) (2026-03-14)
+
+
+### Documentation
+
+* update readme for club-first focus ([f257147](https://github.com/jonnystendahl/clayresults/commit/f257147dd36809efc4e98ad31f1e1e41f40ba521))
+
 ### [0.1.2](https://github.com/jonnystendahl/clayresults/compare/v0.1.1...v0.1.2) (2026-03-14)
 
 
