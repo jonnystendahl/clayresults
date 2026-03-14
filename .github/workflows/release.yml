@@ -40,7 +40,9 @@ jobs:
 
       - name: Read release version
         id: release_version
-        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+        run: |
+          version=$(node -p 'require("./package.json").version')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Create or update release pull request
         id: create_release_pr
@@ -83,7 +85,9 @@ jobs:
 
       - name: Read release version
         id: release_version
-        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+        run: |
+          version=$(node -p 'require("./package.json").version')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Create tag if missing
         run: |
