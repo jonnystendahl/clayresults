@@ -138,14 +138,22 @@ npm run release
 
 The release tooling uses `.versionrc.json` to group commit types into changelog sections.
 
-You can also run the same release flow from GitHub Actions. The repository includes `.github/workflows/release.yml`, which can be started manually from the Actions tab and also runs automatically for pushes to `main`. It will:
+You can also run the release flow from GitHub Actions. The repository includes `.github/workflows/release.yml`, which can be started manually from the Actions tab and also runs automatically for pushes to `main`.
 
-- install dependencies
-- run `npm run release`
-- update `CHANGELOG.md`, `package.json`, and `package-lock.json`
-- push the release commit and tag back to `main`
+With protected `main`, the workflow does not push release commits directly to the branch. Instead it:
 
-The workflow skips self-triggered release loops by ignoring commits created by `github-actions[bot]` and commits whose message starts with `chore(release):`.
+- installs dependencies
+- prepares the next `CHANGELOG.md`, `package.json`, and `package-lock.json` changes with `standard-version`
+- creates or updates a release pull request named `chore(release): x.y.z`
+- creates the matching `vx.y.z` tag after that release pull request is merged to `main`
+
+To allow the workflow to open release pull requests, enable GitHub Actions pull request creation in the repository settings:
+
+- `Settings`
+- `Actions`
+- `General`
+- `Workflow permissions`
+- enable `Allow GitHub Actions to create and approve pull requests`
 
 Because versioning starts at `0.1.0` now, create the first baseline tag after the `0.1.0` release commit is in git:
 
