@@ -1,11 +1,181 @@
-@import 'tailwindcss';
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+:root {
+    --cr-bg: #f4efe7;
+    --cr-surface: rgba(255, 255, 255, 0.86);
+    --cr-ink: #1e2a23;
+    --cr-muted: #5f6b62;
+    --cr-primary: #9f4f16;
+    --cr-primary-dark: #6f330d;
+    --cr-success: #2f6b52;
+    --cr-border: rgba(30, 42, 35, 0.12);
+    --bs-body-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --bs-body-bg: var(--cr-bg);
+    --bs-body-color: var(--cr-ink);
+    --bs-primary: var(--cr-primary);
+    --bs-primary-rgb: 159, 79, 22;
+    --bs-secondary-color: var(--cr-muted);
+    --bs-border-color: var(--cr-border);
+    --bs-success: var(--cr-success);
+    --bs-success-rgb: 47, 107, 82;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(217, 183, 121, 0.45), transparent 32%),
+        radial-gradient(circle at top right, rgba(159, 79, 22, 0.22), transparent 28%),
+        linear-gradient(180deg, #f8f2e8 0%, #efe5d6 100%);
+}
+
+.app-shell {
+    min-height: 100vh;
+}
+
+.hero-panel,
+.content-panel,
+.auth-panel,
+.stats-card,
+.result-card {
+    background: var(--cr-surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--cr-border);
+    box-shadow: 0 1.25rem 3rem rgba(48, 33, 18, 0.09);
+}
+
+.hero-panel {
+    border-radius: 2rem;
+    overflow: hidden;
+}
+
+.hero-band {
+    background: linear-gradient(135deg, rgba(30, 42, 35, 0.95), rgba(69, 87, 77, 0.88));
+    color: #f8f2e8;
+}
+
+.discipline-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(217, 183, 121, 0.25);
+    color: var(--cr-ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.discipline-chip::before {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--cr-primary);
+    content: '';
+}
+
+.section-label {
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--cr-primary);
+}
+
+.display-balance {
+    text-wrap: balance;
+}
+
+.brand-mark {
+    width: 3rem;
+    height: 3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--cr-primary), #cb7a34);
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+.navbar-blur {
+    background: rgba(248, 242, 232, 0.82);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(30, 42, 35, 0.08);
+}
+
+.content-panel,
+.auth-panel {
+    border-radius: 1.5rem;
+}
+
+.stats-card,
+.result-card {
+    border-radius: 1.25rem;
+}
+
+.stats-value {
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    font-weight: 800;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--cr-primary);
+    --bs-btn-border-color: var(--cr-primary);
+    --bs-btn-hover-bg: var(--cr-primary-dark);
+    --bs-btn-hover-border-color: var(--cr-primary-dark);
+    --bs-btn-active-bg: var(--cr-primary-dark);
+    --bs-btn-active-border-color: var(--cr-primary-dark);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--cr-primary);
+    --bs-btn-border-color: rgba(159, 79, 22, 0.4);
+    --bs-btn-hover-bg: var(--cr-primary);
+    --bs-btn-hover-border-color: var(--cr-primary);
+}
+
+.table > :not(caption) > * > * {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.result-score {
+    min-width: 4.5rem;
+    display: inline-flex;
+    justify-content: center;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(47, 107, 82, 0.12);
+    color: var(--cr-success);
+    font-weight: 700;
+}
+
+.note-preview {
+    color: var(--cr-muted);
+    max-width: 40ch;
+}
+
+.form-control,
+.form-select {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-radius: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: rgba(159, 79, 22, 0.35);
+    box-shadow: 0 0 0 0.25rem rgba(159, 79, 22, 0.12);
+}
+
+@media (max-width: 991.98px) {
+    .hero-panel {
+        border-radius: 1.5rem;
+    }
+
+    .stats-value {
+        font-size: 2.2rem;
+    }
 }
