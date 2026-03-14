@@ -29,6 +29,8 @@ class UserManagementController extends Controller
 
     public function edit(User $user): View
     {
+        $user->load('clubMemberships.club');
+
         return view('admin.users.edit', [
             'managedUser' => $user,
         ]);

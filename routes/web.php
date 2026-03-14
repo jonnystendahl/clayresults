@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\ClubManagementController;
+use App\Http\Controllers\Admin\ClubMembershipController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TrainingResultController;
@@ -29,6 +31,17 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+
+        Route::get('/clubs', [ClubManagementController::class, 'index'])->name('clubs.index');
+        Route::get('/clubs/create', [ClubManagementController::class, 'create'])->name('clubs.create');
+        Route::post('/clubs', [ClubManagementController::class, 'store'])->name('clubs.store');
+        Route::get('/clubs/{club}/edit', [ClubManagementController::class, 'edit'])->name('clubs.edit');
+        Route::put('/clubs/{club}', [ClubManagementController::class, 'update'])->name('clubs.update');
+        Route::delete('/clubs/{club}', [ClubManagementController::class, 'destroy'])->name('clubs.destroy');
+
+        Route::post('/clubs/{club}/memberships', [ClubMembershipController::class, 'store'])->name('clubs.memberships.store');
+        Route::put('/clubs/{club}/memberships/{clubMembership}', [ClubMembershipController::class, 'update'])->name('clubs.memberships.update');
+        Route::delete('/clubs/{club}/memberships/{clubMembership}', [ClubMembershipController::class, 'destroy'])->name('clubs.memberships.destroy');
     });
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

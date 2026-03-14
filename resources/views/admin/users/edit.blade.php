@@ -50,6 +50,34 @@
                         <button class="btn btn-primary" type="submit">Save user</button>
                     </div>
                 </form>
+
+                <hr class="my-4">
+
+                <div>
+                    <div class="section-label mb-2">Club memberships</div>
+                    <h2 class="h4 fw-bold mb-3">Current club roles</h2>
+
+                    @if ($managedUser->clubMemberships->isEmpty())
+                        <p class="text-secondary mb-0">This user is not assigned to any club yet.</p>
+                    @else
+                        <div class="vstack gap-3">
+                            @foreach ($managedUser->clubMemberships->sortBy(fn ($membership) => $membership->club->name) as $membership)
+                                <div class="result-card p-3 p-md-4">
+                                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                                        <div>
+                                            <div class="fw-semibold">{{ $membership->club->name }}</div>
+                                            <div class="text-secondary">{{ $membership->role }}</div>
+                                        </div>
+                                        <div class="text-secondary text-md-end">
+                                            <div>Joined {{ $membership->joined_on->format('Y-m-d') }}</div>
+                                            <div>{{ $membership->is_paid ? 'Membership paid' : 'Membership not paid' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
     </div>

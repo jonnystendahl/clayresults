@@ -18,7 +18,8 @@
                     <div class="d-flex align-items-center gap-2 gap-lg-3 ms-auto flex-wrap justify-content-end">
                         <a class="btn btn-outline-primary" href="{{ route('training-results.index') }}">Results</a>
                         @if (auth()->user()->isAdmin())
-                            <a class="btn btn-outline-primary" href="{{ route('admin.users.index') }}">Admin</a>
+                            <a class="btn btn-outline-primary" href="{{ route('admin.users.index') }}">Users</a>
+                            <a class="btn btn-outline-primary" href="{{ route('admin.clubs.index') }}">Clubs</a>
                         @endif
                         <span class="text-secondary d-none d-md-inline">{{ auth()->user()->name }}</span>
                         <form method="POST" action="{{ route('logout') }}">

@@ -85,6 +85,33 @@ After that, put the same database name, username, and password into `.env` and r
 php artisan migrate
 ```
 
+## Running Tests
+
+The test suite uses SQLite in memory by default, so your local PHP CLI must have the SQLite extensions enabled.
+
+Check your loaded PHP modules with:
+
+```bash
+php -m | grep -Ei "sqlite|pdo"
+```
+
+You should see `pdo_sqlite` and `sqlite3` in the output.
+
+If they are missing on Ubuntu or Debian, install them with:
+
+```bash
+sudo apt update
+sudo apt install php8.3-sqlite3
+```
+
+If your machine uses a different PHP package name, `php-sqlite3` is the usual fallback.
+
+Then run the test suite with:
+
+```bash
+php artisan test
+```
+
 ## Deployment
 
 For deployment, this app should be served as a normal Laravel production site.
