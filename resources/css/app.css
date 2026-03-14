@@ -36,7 +36,8 @@ body {
 .content-panel,
 .auth-panel,
 .stats-card,
-.result-card {
+.result-card,
+.club-directory-card {
     background: var(--cr-surface);
     backdrop-filter: blur(12px);
     border: 1px solid var(--cr-border);
@@ -110,8 +111,18 @@ body {
 }
 
 .stats-card,
-.result-card {
+.result-card,
+.club-directory-card {
     border-radius: 1.25rem;
+}
+
+.club-directory-card {
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.club-directory-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 1.5rem 3.2rem rgba(48, 33, 18, 0.12);
 }
 
 .stats-value {
@@ -134,6 +145,21 @@ body {
     --bs-btn-border-color: rgba(159, 79, 22, 0.4);
     --bs-btn-hover-bg: var(--cr-primary);
     --bs-btn-hover-border-color: var(--cr-primary);
+}
+
+.club-switcher-menu {
+    min-width: 18rem;
+}
+
+.dropdown-menu {
+    border-radius: 1rem;
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    border-radius: 0.85rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
 }
 
 .table > :not(caption) > * > * {

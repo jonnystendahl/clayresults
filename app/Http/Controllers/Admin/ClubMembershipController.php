@@ -12,7 +12,9 @@ class ClubMembershipController extends Controller
 {
     public function store(ClubMembershipRequest $request, Club $club): RedirectResponse
     {
-        $club->memberships()->create($request->validated());
+        $membership = $club->memberships()->create($request->validated());
+
+        $membership->user->syncMainClub();
 
         return redirect()
             ->route('admin.clubs.edit', $club)
@@ -33,8 +35,11 @@ class ClubMembershipController extends Controller
     public function destroy(Club $club, ClubMembership $clubMembership): RedirectResponse
     {
         $membership = $this->clubMembership($club, $clubMembership);
+        $user = $membership->user;
 
         $membership->delete();
+
+        $user->syncMainClub();
 
         return redirect()
             ->route('admin.clubs.edit', $club)

@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      */
@@ -16,7 +18,7 @@ class ExampleTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee('Clay shooting logbook')
-            ->assertSee('Start logging your results');
+            ->assertSee('Club manager')
+            ->assertSee('Clubs in the system');
     }
 }

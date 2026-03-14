@@ -86,6 +86,7 @@ class ClubManagementTest extends TestCase
             ->assertSessionHas('status', 'Club membership added.');
 
         $membership = $club->memberships()->firstOrFail();
+        $member->refresh();
 
         $this->assertDatabaseHas('club_memberships', [
             'club_id' => $club->id,
@@ -93,6 +94,8 @@ class ClubManagementTest extends TestCase
             'role' => 'Board member',
             'is_paid' => 1,
         ]);
+
+        $this->assertSame($club->id, $member->main_club_id);
 
         $this->actingAs($admin)
             ->put(route('admin.clubs.memberships.update', [$club, $membership]), [

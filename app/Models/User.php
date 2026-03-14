@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'main_club_id',
     ];
 
     /**
@@ -61,6 +63,11 @@ class User extends Authenticatable
         return $this->hasMany(TrainingResult::class);
     }
 
+    public function mainClub(): BelongsTo
+    {
+        return $this->belongsTo(Club::class, 'main_club_id');
+    }
+
     public function clubMemberships(): HasMany
     {
         return $this->hasMany(ClubMembership::class);
@@ -71,5 +78,43 @@ class User extends Authenticatable
         return $this->belongsToMany(Club::class, 'club_memberships')
             ->withPivot(['id', 'role', 'is_paid', 'joined_on', 'last_paid_on', 'ends_on'])
             ->withTimestamps();
+    }
+
+    public function canAccessClub(Club $club): bool
+    {
+        if ($this->relationLoaded('clubs')) {
+            return $this->clubs->contains(fn (Club $memberClub): bool => $memberClub->is($club));
+        }
+
+        return $this->clubs()->whereKey($club)->exists();
+    }
+
+    public function setMainClub(Club $club): void
+    {
+        abort_unless($this->canAccessClub($club), 404);
+
+        $this->forceFill([
+            'main_club_id' => $club->id,
+        ])->save();
+
+        $this->unsetRelation('mainClub');
+    }
+
+    public function syncMainClub(): void
+    {
+        if ($this->main_club_id !== null && $this->clubMemberships()->where('club_id', $this->main_club_id)->exists()) {
+            return;
+        }
+
+        $fallbackClubId = $this->clubMemberships()
+            ->orderBy('joined_on')
+            ->orderBy('club_id')
+            ->value('club_id');
+
+        $this->forceFill([
+            'main_club_id' => $fallbackClubId,
+        ])->save();
+
+        $this->unsetRelation('mainClub');
     }
 }

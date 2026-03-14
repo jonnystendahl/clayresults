@@ -5,10 +5,12 @@ use App\Http\Controllers\Admin\ClubManagementController;
 use App\Http\Controllers\Admin\ClubMembershipController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ClubSelectionController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrainingResultController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -19,7 +21,9 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::redirect('/dashboard', '/results')->name('dashboard');
+    Route::redirect('/dashboard', '/')->name('dashboard');
+
+    Route::post('/clubs/{club}/main', [ClubSelectionController::class, 'update'])->name('clubs.main.update');
 
     Route::get('/results', [TrainingResultController::class, 'index'])->name('training-results.index');
     Route::post('/results', [TrainingResultController::class, 'store'])->name('training-results.store');

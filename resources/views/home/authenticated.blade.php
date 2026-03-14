@@ -1,0 +1,176 @@
+@extends('layouts.app', ['title' => ($mainClub?->name ? $mainClub->name.' | ClayResults' : 'Your Club | ClayResults')])
+
+@section('content')
+    @if ($mainClub === null)
+        <div class="row justify-content-center">
+            <div class="col-xl-8">
+                <div class="content-panel p-4 p-lg-5 text-center">
+                    <div class="section-label mb-2">No main club yet</div>
+                    <h1 class="h2 fw-bold mb-3">You are not connected to a club yet</h1>
+                    <p class="text-secondary mb-0">Once an administrator adds you to a club, your main club page will appear here.</p>
+                </div>
+            </div>
+        </div>
+    @else
+        <div class="row g-4 g-xl-5 align-items-start">
+            <div class="col-xl-4">
+                <div class="content-panel p-4 p-lg-5 position-sticky" style="top: 6rem;">
+                    <div class="section-label mb-2">Main club</div>
+                    <h1 class="h2 fw-bold mb-3">{{ $mainClub->name }}</h1>
+                    <p class="text-secondary mb-4">This is your selected club home. Use the club menu in the top navigation if you want to switch to another club you belong to.</p>
+
+                    <div class="vstack gap-3 mb-4">
+                        <div class="result-card p-4">
+                            <div class="section-label mb-2">Location</div>
+                            <div class="fw-semibold">{{ $mainClub->address ?: 'Address not set yet.' }}</div>
+                        </div>
+                        <div class="result-card p-4">
+                            <div class="section-label mb-2">Contact person</div>
+                            <div class="fw-semibold">{{ $mainClub->contact_person_name ?: 'No contact person yet' }}</div>
+                            @if ($mainClub->contact_person_email)
+                                <div class="text-secondary small mt-2">{{ $mainClub->contact_person_email }}</div>
+                            @endif
+                            @if ($mainClub->contact_person_phone)
+                                <div class="text-secondary small">{{ $mainClub->contact_person_phone }}</div>
+                            @endif
+                        </div>
+                    </div>
+
+                    @if ($mainClub->note)
+                        <div class="result-card p-4">
+                            <div class="section-label mb-2">Club note</div>
+                            <div class="text-secondary">{{ $mainClub->note }}</div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-xl-8">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stats-card p-4 h-100">
+                            <div class="section-label mb-2">Members</div>
+                            <div class="stats-value">{{ $mainClub->memberships->count() }}</div>
+                            <div class="text-secondary">Tracked memberships in your main club</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card p-4 h-100">
+                            <div class="section-label mb-2">Your role</div>
+                            <div class="fs-4 fw-bold">{{ $mainMembership?->role ?? 'Member' }}</div>
+                            <div class="text-secondary">Your role in this club right now</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card p-4 h-100">
+                            <div class="section-label mb-2">Payment</div>
+                            <div class="fs-4 fw-bold">{{ $mainMembership?->is_paid ? 'Paid' : 'Not paid' }}</div>
+                            <div class="text-secondary">Based on the latest membership status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-panel p-4 p-lg-5 mb-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                        <div>
+                            <div class="section-label mb-2">Your membership</div>
+                            <h2 class="h3 fw-bold mb-0">Membership details for {{ $mainClub->name }}</h2>
+                        </div>
+                        <a class="btn btn-outline-primary" href="{{ route('training-results.index') }}">Open results</a>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="result-card p-4 h-100">
+                                <div class="section-label mb-2">Joined on</div>
+                                <div class="fw-semibold">{{ $mainMembership?->joined_on?->format('Y-m-d') ?? 'Not set' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="result-card p-4 h-100">
+                                <div class="section-label mb-2">Last paid</div>
+                                <div class="fw-semibold">{{ $mainMembership?->last_paid_on?->format('Y-m-d') ?? 'Not registered' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="result-card p-4 h-100">
+                                <div class="section-label mb-2">Membership ends</div>
+                                <div class="fw-semibold">{{ $mainMembership?->ends_on?->format('Y-m-d') ?? 'No end date' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-panel p-4 p-lg-5 mb-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                        <div>
+                            <div class="section-label mb-2">Your clubs</div>
+                            <h2 class="h3 fw-bold mb-0">Club memberships connected to your account</h2>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        @foreach ($clubs as $club)
+                            <div class="col-md-6">
+                                <div class="result-card p-4 h-100 {{ $mainClub->is($club) ? 'border border-primary-subtle' : '' }}">
+                                    <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                                        <div>
+                                            <div class="fw-semibold">{{ $club->name }}</div>
+                                            <div class="text-secondary small">{{ $club->address ?: 'Address not set yet.' }}</div>
+                                        </div>
+                                        @if ($mainClub->is($club))
+                                            <span class="badge text-bg-success">Main club</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="content-panel p-4 p-lg-5">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                        <div>
+                            <div class="section-label mb-2">Roster</div>
+                            <h2 class="h3 fw-bold mb-0">Members in {{ $mainClub->name }}</h2>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Member</th>
+                                    <th scope="col">Role</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Ends</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($mainClub->memberships as $membership)
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            {{ $membership->user->name }}
+                                            @if ($membership->user->is(auth()->user()))
+                                                <span class="badge text-bg-light border ms-2">You</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $membership->role }}</td>
+                                        <td>
+                                            @if ($membership->is_paid)
+                                                <span class="badge text-bg-success">Paid</span>
+                                            @else
+                                                <span class="badge text-bg-secondary">Not paid</span>
+                                            @endif
+                                        </td>
+                                        <td>{{ $membership->ends_on?->format('Y-m-d') ?? 'No end date' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+@endsection

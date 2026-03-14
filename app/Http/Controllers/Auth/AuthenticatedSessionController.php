@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('training-results.index'));
+        return redirect()->intended(route('home'));
     }
 
     public function destroy(Request $request): RedirectResponse
