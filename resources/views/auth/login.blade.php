@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Log in | Clay Results'])
+@extends('layouts.app', ['title' => 'Log in | ClayResults'])
 
 @section('content')
     <div class="row justify-content-center">

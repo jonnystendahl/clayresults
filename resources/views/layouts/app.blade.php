@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ $title ?? config('app.name', 'Clay Results') }}</title>
+        <title>{{ $title ?? config('app.name', 'ClayResults') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
@@ -11,11 +11,15 @@
             <div class="container py-2">
                 <a class="navbar-brand d-flex align-items-center gap-3 fw-semibold" href="{{ route('home') }}">
                     <span class="brand-mark">CR</span>
-                    <span>Clay Results</span>
+                    <span>ClayResults</span>
                 </a>
 
                 @auth
-                    <div class="d-flex align-items-center gap-3 ms-auto">
+                    <div class="d-flex align-items-center gap-2 gap-lg-3 ms-auto flex-wrap justify-content-end">
+                        <a class="btn btn-outline-primary" href="{{ route('training-results.index') }}">Results</a>
+                        @if (auth()->user()->isAdmin())
+                            <a class="btn btn-outline-primary" href="{{ route('admin.users.index') }}">Admin</a>
+                        @endif
                         <span class="text-secondary d-none d-md-inline">{{ auth()->user()->name }}</span>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
