@@ -112,6 +112,39 @@ Then run the test suite with:
 php artisan test
 ```
 
+## Versioning And Releases
+
+This repository now follows Semantic Versioning together with Conventional Commits.
+
+- `fix:` commits bump the patch version, for example `0.1.0 -> 0.1.1`
+- `feat:` commits bump the minor version, for example `0.1.0 -> 0.2.0`
+- breaking changes bump the major version, for example `0.1.0 -> 1.0.0`
+
+The current starting version is `0.1.0`.
+
+Preview the next calculated release without changing files:
+
+```bash
+npm run release:dry
+```
+
+Create the next version bump and changelog entry from conventional commits:
+
+```bash
+npm run release
+```
+
+The release tooling uses `.versionrc.json` to group commit types into changelog sections.
+
+Because versioning starts at `0.1.0` now, create the first baseline tag after the `0.1.0` release commit is in git:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+After that, future `npm run release` commands will calculate the next version from commits after the latest release tag.
+
 ## Deployment
 
 For deployment, this app should be served as a normal Laravel production site.

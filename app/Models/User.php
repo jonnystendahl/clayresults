@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->hasMany(TrainingResult::class);
     }
 
+    public function renewalRequests(): HasMany
+    {
+        return $this->hasMany(ClubRenewalRequest::class);
+    }
+
     public function mainClub(): BelongsTo
     {
         return $this->belongsTo(Club::class, 'main_club_id');

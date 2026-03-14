@@ -3,6 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\Club;
+use App\Models\ClubBoardMember;
+use App\Models\ClubEvent;
+use App\Models\ClubNewsPost;
+use App\Models\ClubRenewalSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -55,26 +59,58 @@ class HomePageTest extends TestCase
             'contact_person_email' => 'anna@example.test',
         ]);
 
-        $club->memberships()->create([
-            'user_id' => User::factory()->create(['name' => 'Eva Board'])->id,
-            'role' => 'Board member',
-            'is_paid' => true,
-            'joined_on' => '2026-01-01',
+        $club->newsPosts()->create([
+            'title' => 'Spring opening',
+            'excerpt' => 'Range opens for the season.',
+            'body' => 'The range opens next weekend.',
+            'published_at' => now()->subDay(),
         ]);
-        $club->memberships()->create([
-            'user_id' => User::factory()->create(['name' => 'Nils Member'])->id,
-            'role' => 'Member',
-            'is_paid' => false,
-            'joined_on' => '2026-01-02',
+        $club->events()->create([
+            'title' => 'Training night',
+            'location' => 'Range A',
+            'description' => 'Weekly trap training.',
+            'starts_at' => now()->addWeek(),
+            'published_at' => now()->subDay(),
+        ]);
+        $club->boardMembers()->create([
+            'name' => 'Eva Board',
+            'title' => 'Chairperson',
+            'email' => 'eva@example.test',
+            'is_public' => true,
+            'sort_order' => 1,
+        ]);
+        $club->boardMembers()->create([
+            'name' => 'Nils Member',
+            'title' => 'Internal contact',
+            'email' => 'nils@example.test',
+            'is_public' => false,
+            'sort_order' => 2,
+        ]);
+        $club->renewalSetting()->create([
+            'season_label' => '2026',
+            'title' => 'Renew your 2026 membership',
+            'description' => 'Submit your request before the deadline.',
+            'fee_amount' => 1200,
+            'fee_currency' => 'SEK',
+            'renewal_deadline' => '2026-03-31',
+            'payment_details' => 'Pay by bankgiro 123-4567.',
+            'is_open' => true,
         ]);
 
         $this->get(route('clubs.show', $club))
             ->assertOk()
             ->assertSee('Stockholm Lerduveklubb')
-            ->assertSee('Club news placeholder')
-            ->assertSee('Upcoming events placeholder')
-            ->assertSee('Board and officials placeholder')
-            ->assertSee('Renewal guidance placeholder')
+            ->assertSee('Club news')
+            ->assertSee('Events and calendar')
+            ->assertSee('Board information')
+            ->assertSee('Membership renewal')
+            ->assertSee(route('clubs.news', $club), false)
+            ->assertSee(route('clubs.events', $club), false)
+            ->assertSee(route('clubs.board', $club), false)
+            ->assertSee(route('clubs.renewal', $club), false);
+
+        $this->get(route('clubs.board', $club))
+            ->assertOk()
             ->assertSee('Eva Board')
             ->assertDontSee('Nils Member');
     }
@@ -117,10 +153,14 @@ class HomePageTest extends TestCase
             ->assertSee('Membership details for Main Club')
             ->assertSee('Second Club')
             ->assertSee('Official')
-            ->assertSee('Club news placeholder')
-            ->assertSee('Events and training placeholder')
-            ->assertSee('Board and official roles placeholder')
-            ->assertSee('Renewal and payment placeholder');
+            ->assertSee('Club news')
+            ->assertSee('Events and training')
+            ->assertSee('Board information')
+            ->assertSee('Membership renewal')
+            ->assertSee(route('clubs.news', $mainClub), false)
+            ->assertSee(route('clubs.events', $mainClub), false)
+            ->assertSee(route('clubs.board', $mainClub), false)
+            ->assertSee(route('clubs.renewal', $mainClub), false);
     }
 
     public function test_user_can_switch_main_club_from_the_menu(): void

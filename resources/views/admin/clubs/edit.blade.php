@@ -81,6 +81,22 @@
             <div class="content-panel p-4 p-lg-5 mb-4">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                     <div>
+                        <div class="section-label mb-2">Club modules</div>
+                        <h2 class="h3 fw-bold mb-0">Manage public and member pages</h2>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.news.index', $club) }}"><div class="fw-semibold mb-2">News posts</div><div class="text-secondary">Publish club news shown on the public club site.</div></a></div>
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.events.index', $club) }}"><div class="fw-semibold mb-2">Events</div><div class="text-secondary">Manage competitions, training nights, and meetings.</div></a></div>
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.board.index', $club) }}"><div class="fw-semibold mb-2">Board information</div><div class="text-secondary">Publish public board and official contact entries.</div></a></div>
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.renewal.edit', $club) }}"><div class="fw-semibold mb-2">Membership renewal</div><div class="text-secondary">Configure renewal deadlines, fees, and review requests.</div></a></div>
+                </div>
+            </div>
+
+            <div class="content-panel p-4 p-lg-5 mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                    <div>
                         <div class="section-label mb-2">Memberships</div>
                         <h2 class="h3 fw-bold mb-0">Add member to {{ $club->name }}</h2>
                     </div>

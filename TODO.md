@@ -6,9 +6,10 @@ Use it to collect ideas before they become fully planned features.
 
 ## Next Ideas
 
-- [ ] Turn the placeholder sections into actual club-managed content with database-backed news posts and events.
-- [ ] Add an admin interface for publishing public board information separately from private membership records.
-- [ ] Add a dedicated membership renewal flow with forms, fee status, and deadlines instead of placeholder text.
+- [x] Turn the placeholder sections into actual club-managed content with database-backed news posts and events.
+- [x] Add an admin interface for publishing public board information separately from private membership records.
+- [x] Add a dedicated membership renewal flow with forms, fee status, and deadlines instead of placeholder text.
+- [x] The club modules should appear on it own pages.
 
 ## Notes
 

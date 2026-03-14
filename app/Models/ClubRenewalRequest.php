@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ClubMembership extends Model
+class ClubRenewalRequest extends Model
 {
     use HasFactory;
 
@@ -15,12 +14,14 @@ class ClubMembership extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'club_membership_id',
         'user_id',
-        'role',
-        'is_paid',
-        'joined_on',
-        'last_paid_on',
-        'ends_on',
+        'season_label',
+        'status',
+        'note',
+        'admin_note',
+        'submitted_at',
+        'decided_at',
     ];
 
     /**
@@ -29,10 +30,8 @@ class ClubMembership extends Model
     protected function casts(): array
     {
         return [
-            'is_paid' => 'boolean',
-            'joined_on' => 'date',
-            'last_paid_on' => 'date',
-            'ends_on' => 'date',
+            'submitted_at' => 'datetime',
+            'decided_at' => 'datetime',
         ];
     }
 
@@ -41,13 +40,13 @@ class ClubMembership extends Model
         return $this->belongsTo(Club::class);
     }
 
+    public function membership(): BelongsTo
+    {
+        return $this->belongsTo(ClubMembership::class, 'club_membership_id');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function renewalRequests(): HasMany
-    {
-        return $this->hasMany(ClubRenewalRequest::class);
     }
 }

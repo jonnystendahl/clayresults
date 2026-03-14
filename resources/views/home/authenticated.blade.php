@@ -128,28 +128,11 @@
                     </div>
                 </div>
 
-                <div class="content-panel p-4 p-lg-5 mb-4" id="club-news">
-                    <div class="section-label mb-2">News</div>
-                    <h2 class="h3 fw-bold mb-3">Club news placeholder</h2>
-                    <p class="text-secondary mb-0">Use this section later for updates from {{ $mainClub->name }}, including shooting calendar changes, range information, seasonal notices, and member communication.</p>
-                </div>
-
-                <div class="content-panel p-4 p-lg-5 mb-4" id="club-events">
-                    <div class="section-label mb-2">Events</div>
-                    <h2 class="h3 fw-bold mb-3">Events and training placeholder</h2>
-                    <p class="text-secondary mb-0">This area can later show training sessions, competitions, workdays, courses, guest events, or booking information tied to your main club.</p>
-                </div>
-
-                <div class="content-panel p-4 p-lg-5 mb-4" id="club-board">
-                    <div class="section-label mb-2">Board information</div>
-                    <h2 class="h3 fw-bold mb-3">Board and official roles placeholder</h2>
-                    <p class="text-secondary mb-0">This can later surface board members, officials, committee roles, and contact details relevant to {{ $mainClub->name }}.</p>
-                </div>
-
-                <div class="content-panel p-4 p-lg-5 mb-4" id="membership-renewal">
-                    <div class="section-label mb-2">Membership renewal</div>
-                    <h2 class="h3 fw-bold mb-3">Renewal and payment placeholder</h2>
-                    <p class="text-secondary mb-0">This section can later explain renewal windows, payment instructions, grace periods, and club-specific membership rules.</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6"><a class="content-panel p-4 p-lg-5 h-100 d-block text-decoration-none text-reset" href="{{ route('clubs.news', $mainClub) }}"><div class="section-label mb-2">News</div><h2 class="h3 fw-bold mb-2">Club news</h2><p class="text-secondary mb-0">{{ $mainClub->newsPosts->isNotEmpty() ? 'Read the latest published updates from your main club.' : 'No published news yet. This page will show updates when the club starts posting.' }}</p></a></div>
+                    <div class="col-md-6"><a class="content-panel p-4 p-lg-5 h-100 d-block text-decoration-none text-reset" href="{{ route('clubs.events', $mainClub) }}"><div class="section-label mb-2">Events</div><h2 class="h3 fw-bold mb-2">Events and training</h2><p class="text-secondary mb-0">{{ $mainClub->events->isNotEmpty() ? 'Open the event page to see upcoming training, competitions, and meetings.' : 'No published events yet. This page will show the club calendar when available.' }}</p></a></div>
+                    <div class="col-md-6"><a class="content-panel p-4 p-lg-5 h-100 d-block text-decoration-none text-reset" href="{{ route('clubs.board', $mainClub) }}"><div class="section-label mb-2">Board</div><h2 class="h3 fw-bold mb-2">Board information</h2><p class="text-secondary mb-0">{{ $mainClub->boardMembers->isNotEmpty() ? 'See public board and official contacts for your club.' : 'No public board information has been published yet.' }}</p></a></div>
+                    <div class="col-md-6"><a class="content-panel p-4 p-lg-5 h-100 d-block text-decoration-none text-reset" href="{{ route('clubs.renewal', $mainClub) }}"><div class="section-label mb-2">Renewal</div><h2 class="h3 fw-bold mb-2">Membership renewal</h2><p class="text-secondary mb-0">{{ $mainClub->renewalSetting?->is_open ? 'Renewal is open now. Review fees, deadlines, and request status.' : 'Review fees, deadlines, and renewal information for your main club.' }}</p></a></div>
                 </div>
 
                 <div class="content-panel p-4 p-lg-5">

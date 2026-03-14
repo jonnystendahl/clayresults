@@ -11,15 +11,14 @@ class PublicClubController extends Controller
     {
         $club->load([
             'memberships.user' => fn ($query) => $query->orderBy('name')->orderBy('email'),
+            'newsPosts' => fn ($query) => $query->whereNotNull('published_at')->where('published_at', '<=', now())->latest('published_at'),
+            'events' => fn ($query) => $query->whereNotNull('published_at')->where('published_at', '<=', now())->orderBy('starts_at'),
+            'boardMembers' => fn ($query) => $query->where('is_public', true)->orderBy('sort_order')->orderBy('name'),
+            'renewalSetting',
         ]);
-
-        $leadershipMemberships = $club->memberships
-            ->filter(fn ($membership) => in_array(mb_strtolower($membership->role), ['board member', 'official'], true))
-            ->values();
 
         return view('clubs.show', [
             'club' => $club,
-            'leadershipMemberships' => $leadershipMemberships,
             'menuClub' => $club,
         ]);
     }

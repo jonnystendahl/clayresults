@@ -56,10 +56,10 @@
                                 @if ($menuClub !== null)
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}">Public club page</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('home') }}#club-news">Club news</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('home') }}#club-events">Events</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('home') }}#club-board">Board information</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('home') }}#membership-renewal">Membership renewal</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.news', $menuClub) }}">Club news</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.events', $menuClub) }}">Events</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.board', $menuClub) }}">Board information</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.renewal', $menuClub) }}">Membership renewal</a></li>
                                 @endif
                                 @if ($navigationUser?->isAdmin())
                                     <li><hr class="dropdown-divider"></li>
@@ -88,10 +88,10 @@
                                 @if ($menuClub !== null)
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}">Club overview</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#club-news">Club news</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#club-events">Events</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#club-board">Board information</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}#membership-renewal">Membership renewal</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.news', $menuClub) }}">Club news</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.events', $menuClub) }}">Events</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.board', $menuClub) }}">Board information</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('clubs.renewal', $menuClub) }}">Membership renewal</a></li>
                                 @endif
                                 <li><a class="dropdown-item" href="{{ route('register') }}">Create account</a></li>
                             </ul>
