@@ -58,7 +58,7 @@
                         <div class="stats-card p-4 h-100">
                             <div class="section-label mb-2">Your role</div>
                             <div class="fs-4 fw-bold">{{ $mainMembership?->role ?? 'Member' }}</div>
-                            <div class="text-secondary">Your role in this club right now</div>
+                            <div class="text-secondary">{{ $mainMembership?->is_club_admin ? 'You can administer club members and passwords.' : 'Your role in this club right now' }}</div>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -141,6 +141,9 @@
                             <div class="section-label mb-2">Roster</div>
                             <h2 class="h3 fw-bold mb-0">Members in {{ $mainClub->name }}</h2>
                         </div>
+                        @if ($canManageMainClub)
+                            <div class="text-secondary">Club administrators can set temporary passwords for members in this club.</div>
+                        @endif
                     </div>
 
                     <div class="table-responsive">
@@ -151,6 +154,9 @@
                                     <th scope="col">Role</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Ends</th>
+                                    @if ($canManageMainClub)
+                                        <th class="text-end" scope="col">Temporary password</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -162,7 +168,12 @@
                                                 <span class="badge text-bg-light border ms-2">You</span>
                                             @endif
                                         </td>
-                                        <td>{{ $membership->role }}</td>
+                                        <td>
+                                            {{ $membership->role }}
+                                            @if ($membership->is_club_admin)
+                                                <span class="badge text-bg-warning ms-2">Club admin</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($membership->is_paid)
                                                 <span class="badge text-bg-success">Paid</span>
@@ -171,7 +182,42 @@
                                             @endif
                                         </td>
                                         <td>{{ $membership->ends_on?->format('Y-m-d') ?? 'No end date' }}</td>
+                                        @if ($canManageMainClub)
+                                            <td class="text-end">
+                                                <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#temporary-password-{{ $membership->id }}" aria-expanded="false" aria-controls="temporary-password-{{ $membership->id }}">
+                                                    Set temporary password
+                                                </button>
+                                            </td>
+                                        @endif
                                     </tr>
+                                    @if ($canManageMainClub)
+                                        <tr class="collapse" id="temporary-password-{{ $membership->id }}">
+                                            <td colspan="5">
+                                                <div class="result-card p-4 my-2">
+                                                    <div class="fw-semibold mb-2">Temporary password for {{ $membership->user->name }}</div>
+                                                    <p class="text-secondary small mb-3">Set a temporary password that the member can use to log in and change later.</p>
+
+                                                    <form method="POST" action="{{ route('clubs.members.password.store', [$mainClub, $membership->user]) }}" class="row g-3 align-items-end">
+                                                        @csrf
+
+                                                        <div class="col-md-5">
+                                                            <label class="form-label fw-semibold" for="password-{{ $membership->id }}">Temporary password</label>
+                                                            <input class="form-control @error('password') is-invalid @enderror" id="password-{{ $membership->id }}" name="password" type="password" required>
+                                                        </div>
+
+                                                        <div class="col-md-5">
+                                                            <label class="form-label fw-semibold" for="password_confirmation-{{ $membership->id }}">Confirm password</label>
+                                                            <input class="form-control" id="password_confirmation-{{ $membership->id }}" name="password_confirmation" type="password" required>
+                                                        </div>
+
+                                                        <div class="col-md-2 d-grid">
+                                                            <button class="btn btn-primary" type="submit">Save</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>

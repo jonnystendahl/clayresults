@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Club;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         if ($request->user() === null) {
             $clubs = Club::query()
@@ -26,6 +27,14 @@ class HomeController extends Controller
         }
 
         $user = $request->user();
+
+        if ($user->must_change_password) {
+            return redirect()->route('password.change.edit');
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
 
         $user->syncMainClub();
         $user->load([
@@ -54,6 +63,7 @@ class HomeController extends Controller
             'clubs' => $user->clubs,
             'mainClub' => $mainClub,
             'mainMembership' => $mainMembership,
+            'canManageMainClub' => $mainClub !== null && $user->canAdministerClub($mainClub),
             'menuClub' => $mainClub,
         ]);
     }

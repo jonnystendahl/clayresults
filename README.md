@@ -60,6 +60,9 @@ Run both the Laravel backend and Vite in one terminal:
 
 The script starts `php artisan serve` and `npm run dev`, and stops the other process automatically if either one exits.
 
+In local development, the script also starts a lightweight SMTP mail catcher on `127.0.0.1:1025`.
+Open `http://127.0.0.1:8000/dev/mail` to read captured verification and password-reset emails.
+
 If you open the repository in VS Code, the workspace also starts `./dev-start.sh` automatically through `.vscode/tasks.json`.
 
 If you prefer running them separately, use two terminals.

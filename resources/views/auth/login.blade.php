@@ -27,6 +27,10 @@
                         @enderror
                     </div>
 
+                    <div class="d-flex justify-content-end">
+                        <a class="link-primary fw-semibold text-decoration-none" href="{{ route('password.request') }}">Forgot your password?</a>
+                    </div>
+
                     <div class="form-check">
                         <input class="form-check-input" id="remember" name="remember" type="checkbox" value="1">
                         <label class="form-check-label" for="remember">Keep me signed in</label>
