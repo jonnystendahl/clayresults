@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/jonnystendahl/clayresults/compare/v0.2.0...v0.2.1) (2026-03-15)
+
+
+### Features
+
+* Move membership to only Club ([16d8915](https://github.com/jonnystendahl/clayresults/commit/16d8915c77d3c0e4c4433317a04d1198fa9d67ad))
+
 ## [0.2.0](https://github.com/jonnystendahl/clayresults/compare/v0.1.7...v0.2.0) (2026-03-15)
 
 
