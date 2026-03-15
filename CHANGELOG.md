@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/jonnystendahl/clayresults/compare/v0.1.6...v0.1.7) (2026-03-15)
+
+
+### Features
+
+* add password reset functionallity ([3a28017](https://github.com/jonnystendahl/clayresults/commit/3a280178db7bfc270ea9e6db690a3169ba988e32))
+
+
+### Bug Fixes
+
+* Bugg in the reset password function ([723774d](https://github.com/jonnystendahl/clayresults/commit/723774d8a12688a1ee20e20b6cb7e2f5f90f0560))
+
 ### [0.1.6](https://github.com/jonnystendahl/clayresults/compare/v0.1.5...v0.1.6) (2026-03-15)
 
 
