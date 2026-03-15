@@ -25,6 +25,11 @@ cleanup() {
         wait "$vite_pid" 2>/dev/null || true
     fi
 
+    if [[ -n "${mail_pid:-}" ]] && kill -0 "$mail_pid" 2>/dev/null; then
+        kill "$mail_pid" 2>/dev/null || true
+        wait "$mail_pid" 2>/dev/null || true
+    fi
+
     if [[ -n "${artisan_pid:-}" ]] && kill -0 "$artisan_pid" 2>/dev/null; then
         kill "$artisan_pid" 2>/dev/null || true
         wait "$artisan_pid" 2>/dev/null || true
@@ -38,6 +43,14 @@ trap cleanup EXIT INT TERM
 echo "Starting Laravel development server..."
 php artisan serve &
 artisan_pid=$!
+
+if command -v python3 >/dev/null 2>&1; then
+    echo "Starting local mail catcher on http://127.0.0.1:8025 ..."
+    python3 scripts/dev_mail_catcher.py &
+    mail_pid=$!
+else
+    echo "python3 not found, skipping local mail catcher." >&2
+fi
 
 echo "Starting Vite dev server..."
 npm run dev &

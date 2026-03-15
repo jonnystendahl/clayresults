@@ -10,8 +10,9 @@
         @php
             $navigationUser = $navigationUser ?? auth()->user();
             $isUnverifiedUser = $navigationUser?->hasVerifiedEmail() === false;
-            $navigationClubs = $isUnverifiedUser ? collect() : ($navigationUser?->clubs ?? collect());
-            $currentMainClub = $isUnverifiedUser ? null : $navigationUser?->mainClub;
+            $requiresPasswordChange = $navigationUser?->must_change_password === true;
+            $navigationClubs = ($isUnverifiedUser || $requiresPasswordChange) ? collect() : ($navigationUser?->clubs ?? collect());
+            $currentMainClub = ($isUnverifiedUser || $requiresPasswordChange) ? null : $navigationUser?->mainClub;
             $menuClub = $menuClub ?? $currentMainClub ?? null;
         @endphp
 
@@ -47,7 +48,9 @@
                             </div>
                         @endif
 
-                        @if ($isUnverifiedUser)
+                        @if ($requiresPasswordChange)
+                            <a class="btn btn-outline-primary" href="{{ route('password.change.edit') }}">Change password</a>
+                        @elseif ($isUnverifiedUser)
                             <a class="btn btn-outline-primary" href="{{ route('verification.notice') }}">Verify email</a>
                         @else
                             <div class="dropdown">
@@ -69,6 +72,10 @@
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Manage users</a></li>
                                         <li><a class="dropdown-item" href="{{ route('admin.clubs.index') }}">Manage clubs</a></li>
+                                    @endif
+                                    @if (app()->environment('local') && Route::has('dev.mail.index'))
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ route('dev.mail.index') }}">Development mail inbox</a></li>
                                     @endif
                                 </ul>
                             </div>
@@ -97,6 +104,10 @@
                                     <li><a class="dropdown-item" href="{{ route('clubs.events', $menuClub) }}">Events</a></li>
                                     <li><a class="dropdown-item" href="{{ route('clubs.board', $menuClub) }}">Board information</a></li>
                                     <li><a class="dropdown-item" href="{{ route('clubs.renewal', $menuClub) }}">Membership renewal</a></li>
+                                @endif
+                                @if (app()->environment('local') && Route::has('dev.mail.index'))
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('dev.mail.index') }}">Development mail inbox</a></li>
                                 @endif
                                 <li><a class="dropdown-item" href="{{ route('register') }}">Create account</a></li>
                             </ul>

@@ -35,6 +35,7 @@ class PasswordResetTest extends TestCase
 
         $user = User::factory()->create([
             'email' => 'shooter@example.test',
+            'must_change_password' => true,
         ]);
 
         $this->post(route('password.email'), [
@@ -59,5 +60,6 @@ class PasswordResetTest extends TestCase
             ->assertSessionHas('status', __('Your password has been reset.'));
 
         $this->assertTrue(Hash::check('new-password', $user->fresh()->password));
+        $this->assertFalse($user->fresh()->must_change_password);
     }
 }

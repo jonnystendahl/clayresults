@@ -28,6 +28,10 @@ class HomeController extends Controller
 
         $user = $request->user();
 
+        if ($user->must_change_password) {
+            return redirect()->route('password.change.edit');
+        }
+
         if (! $user->hasVerifiedEmail()) {
             return redirect()->route('verification.notice');
         }

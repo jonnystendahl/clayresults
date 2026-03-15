@@ -19,6 +19,7 @@ class ClubMemberPasswordController extends Controller
 
         $user->forceFill([
             'password' => $validated['password'],
+            'must_change_password' => true,
             'remember_token' => Str::random(60),
         ])->save();
 

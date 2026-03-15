@@ -43,6 +43,59 @@ class ClubAdminPasswordResetTest extends TestCase
             ->assertSessionHas('status', 'Temporary password saved for '.$member->name.'.');
 
         $this->assertTrue(Hash::check('temporary-pass', $member->fresh()->password));
+        $this->assertTrue($member->fresh()->must_change_password);
+    }
+
+    public function test_member_with_temporary_password_is_redirected_to_required_password_change_after_login(): void
+    {
+        $member = User::factory()->create([
+            'email' => 'member@example.test',
+            'password' => bcrypt('temporary-pass'),
+            'must_change_password' => true,
+        ]);
+
+        $this->post(route('login'), [
+            'email' => $member->email,
+            'password' => 'temporary-pass',
+        ])->assertRedirect(route('password.change.edit'));
+    }
+
+    public function test_member_cannot_use_the_app_until_the_temporary_password_is_changed(): void
+    {
+        $member = User::factory()->create([
+            'password' => bcrypt('temporary-pass'),
+            'must_change_password' => true,
+        ]);
+
+        $this->actingAs($member)
+            ->get(route('home'))
+            ->assertRedirect(route('password.change.edit'));
+
+        $this->actingAs($member)
+            ->get(route('training-results.index'))
+            ->assertRedirect(route('password.change.edit'));
+    }
+
+    public function test_member_can_set_a_new_password_after_logging_in_with_a_temporary_password(): void
+    {
+        $member = User::factory()->create([
+            'password' => bcrypt('temporary-pass'),
+            'must_change_password' => true,
+        ]);
+
+        $this->actingAs($member)
+            ->put(route('password.change.update'), [
+                'current_password' => 'temporary-pass',
+                'password' => 'personal-pass',
+                'password_confirmation' => 'personal-pass',
+            ])
+            ->assertRedirect(route('home'))
+            ->assertSessionHas('status', 'Your password has been updated.');
+
+        $member->refresh();
+
+        $this->assertFalse($member->must_change_password);
+        $this->assertTrue(Hash::check('personal-pass', $member->password));
     }
 
     public function test_regular_member_cannot_set_temporary_password_for_another_member(): void

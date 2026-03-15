@@ -17,7 +17,7 @@ Use it to collect ideas before they become fully planned features.
   - [x] The verify link should expire within 1 hour.
   - [x] If the e-mail is not verified, the user cannot use the app and can only request a new verification e-mail.
 - [x] Allow a club administrator to set a temporary password for any member of that club.
-- [ ] Add a change-your-password flow after temporary password login.
+- [x] Add a change-your-password flow after temporary password login.
 
 ## Notes
 

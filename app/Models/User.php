@@ -25,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'must_change_password',
         'is_admin',
         'main_club_id',
     ];
@@ -48,6 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
+            'must_change_password' => 'boolean',
             'is_admin' => 'boolean',
             'password' => 'hashed',
         ];

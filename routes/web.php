@@ -5,11 +5,13 @@ use App\Http\Controllers\Admin\ClubManagementController;
 use App\Http\Controllers\Admin\ClubMembershipController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\RequiredPasswordChangeController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ClubMemberPasswordController;
 use App\Http\Controllers\ClubModuleController;
 use App\Http\Controllers\ClubSelectionController;
+use App\Http\Controllers\DevMailController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublicClubController;
 use App\Http\Controllers\TrainingResultController;
@@ -25,6 +27,11 @@ Route::get('/clubs/{club}/news', [ClubModuleController::class, 'news'])->name('c
 Route::get('/clubs/{club}/events', [ClubModuleController::class, 'events'])->name('clubs.events');
 Route::get('/clubs/{club}/board', [ClubModuleController::class, 'board'])->name('clubs.board');
 Route::get('/clubs/{club}/membership-renewal', [ClubModuleController::class, 'renewal'])->name('clubs.renewal');
+
+if (app()->environment(['local', 'testing'])) {
+    Route::get('/dev/mail', [DevMailController::class, 'index'])->name('dev.mail.index');
+    Route::get('/dev/mail/{message}', [DevMailController::class, 'show'])->name('dev.mail.show');
+}
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -42,6 +49,9 @@ Route::middleware('guest')->group(function (): void {
 
 Route::middleware('auth')->group(function (): void {
     Route::redirect('/dashboard', '/')->name('dashboard');
+
+    Route::get('/change-password', [RequiredPasswordChangeController::class, 'edit'])->name('password.change.edit');
+    Route::put('/change-password', [RequiredPasswordChangeController::class, 'update'])->name('password.change.update');
 
     Route::get('/email/verify', function (Request $request): View|RedirectResponse {
         if ($request->user()->hasVerifiedEmail()) {
@@ -72,7 +82,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-Route::middleware(['auth', 'verified'])->group(function (): void {
+Route::middleware(['auth', 'password.changed', 'verified'])->group(function (): void {
     Route::post('/clubs/{club}/main', [ClubSelectionController::class, 'update'])->name('clubs.main.update');
     Route::post('/clubs/{club}/members/{user}/temporary-password', [ClubMemberPasswordController::class, 'store'])->name('clubs.members.password.store');
     Route::post('/clubs/{club}/membership-renewal', [ClubModuleController::class, 'storeRenewalRequest'])->name('clubs.renewal.store');
