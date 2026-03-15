@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/jonnystendahl/clayresults/compare/v0.1.5...v0.1.6) (2026-03-15)
+
+
+### Features
+
+* Add dev-start.sh to start develop servers for laravel ([ac121b8](https://github.com/jonnystendahl/clayresults/commit/ac121b8c110a08ee7ee4c75bb0b723dc0cdd0f2b))
+
 ### [0.1.5](https://github.com/jonnystendahl/clayresults/compare/v0.1.4...v0.1.5) (2026-03-14)
 
 
