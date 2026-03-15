@@ -52,7 +52,17 @@ php artisan migrate
 
 ## Local Development
 
-Run the backend and frontend dev server in separate terminals.
+Run both the Laravel backend and Vite in one terminal:
+
+```bash
+./dev-start.sh
+```
+
+The script starts `php artisan serve` and `npm run dev`, and stops the other process automatically if either one exits.
+
+If you open the repository in VS Code, the workspace also starts `./dev-start.sh` automatically through `.vscode/tasks.json`.
+
+If you prefer running them separately, use two terminals.
 
 Terminal 1:
 
