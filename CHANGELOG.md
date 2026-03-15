@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.2](https://github.com/jonnystendahl/clayresults/compare/v0.2.1...v0.2.2) (2026-03-15)
+
+
+### Bug Fixes
+
+* remove test data only keep 2 clubs and one user ([983f321](https://github.com/jonnystendahl/clayresults/commit/983f321fdfa00dcf4018c09fb2cd145009b63aa2))
+* stop automatic release to happen ([f1a76d2](https://github.com/jonnystendahl/clayresults/commit/f1a76d248b2ab4a696532770548a62a5397b6ab6))
+
 ### [0.2.1](https://github.com/jonnystendahl/clayresults/compare/v0.2.0...v0.2.1) (2026-03-15)
 
 
