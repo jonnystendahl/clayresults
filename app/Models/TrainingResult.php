@@ -23,6 +23,7 @@ class TrainingResult extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'club_id',
         'performed_on',
         'discipline',
         'score',
@@ -39,8 +40,18 @@ class TrainingResult extends Model
         ];
     }
 
+    public function club(): BelongsTo
+    {
+        return $this->belongsTo(Club::class);
+    }
+
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->member();
     }
 }

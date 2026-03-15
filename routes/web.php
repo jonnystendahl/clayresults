@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\ClubManagementController;
 use App\Http\Controllers\Admin\ClubMembershipController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -36,6 +37,9 @@ if (app()->environment(['local', 'testing'])) {
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('/admin/login', [AdminAuthenticatedSessionController::class, 'create'])->name('admin.login');
+    Route::post('/admin/login', [AdminAuthenticatedSessionController::class, 'store'])->name('admin.login.store');
 
     Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
@@ -84,7 +88,7 @@ Route::middleware('auth')->group(function (): void {
 
 Route::middleware(['auth', 'password.changed', 'verified'])->group(function (): void {
     Route::post('/clubs/{club}/main', [ClubSelectionController::class, 'update'])->name('clubs.main.update');
-    Route::post('/clubs/{club}/members/{user}/temporary-password', [ClubMemberPasswordController::class, 'store'])->name('clubs.members.password.store');
+    Route::post('/clubs/{club}/members/{member}/temporary-password', [ClubMemberPasswordController::class, 'store'])->name('clubs.members.password.store');
     Route::post('/clubs/{club}/membership-renewal', [ClubModuleController::class, 'storeRenewalRequest'])->name('clubs.renewal.store');
 
     Route::get('/results', [TrainingResultController::class, 'index'])->name('training-results.index');
@@ -94,9 +98,10 @@ Route::middleware(['auth', 'password.changed', 'verified'])->group(function (): 
     Route::delete('/results/{trainingResult}', [TrainingResultController::class, 'destroy'])->name('training-results.destroy');
 
     Route::prefix('admin')->middleware('admin')->name('admin.')->group(function (): void {
-        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
-        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+        Route::redirect('/users', '/admin/members');
+        Route::get('/members', [UserManagementController::class, 'index'])->name('members.index');
+        Route::get('/members/{member}/edit', [UserManagementController::class, 'edit'])->name('members.edit');
+        Route::put('/members/{member}', [UserManagementController::class, 'update'])->name('members.update');
 
         Route::get('/clubs', [ClubManagementController::class, 'index'])->name('clubs.index');
         Route::get('/clubs/create', [ClubManagementController::class, 'create'])->name('clubs.create');

@@ -33,11 +33,11 @@ class ClubMembershipRequest extends FormRequest
         $clubMembership = $this->route('clubMembership');
 
         return [
-            'user_id' => [
+            'member_id' => [
                 'required',
                 'integer',
                 Rule::exists('users', 'id'),
-                Rule::unique('club_memberships', 'user_id')
+                Rule::unique('club_memberships', 'member_id')
                     ->where(fn ($query) => $query->where('club_id', $club->id))
                     ->ignore($clubMembership),
             ],

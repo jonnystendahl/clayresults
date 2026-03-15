@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ $title ?? config('app.name', 'ClayResults') }}</title>
+        <title>{{ $title ?? config('app.name', 'KlubbManager') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
@@ -19,8 +19,8 @@
         <nav class="navbar navbar-expand-lg sticky-top navbar-blur">
             <div class="container py-2">
                 <a class="navbar-brand d-flex align-items-center gap-3 fw-semibold" href="{{ route('home') }}">
-                    <span class="brand-mark">CR</span>
-                    <span>ClayResults</span>
+                    <span class="brand-mark">KM</span>
+                    <span>KlubbManager</span>
                 </a>
 
                 @auth
@@ -70,7 +70,7 @@
                                     @endif
                                     @if ($navigationUser?->isAdmin())
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Manage users</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.members.index') }}">Manage members</a></li>
                                         <li><a class="dropdown-item" href="{{ route('admin.clubs.index') }}">Manage clubs</a></li>
                                     @endif
                                     @if (app()->environment('local') && Route::has('dev.mail.index'))
@@ -110,6 +110,7 @@
                                     <li><a class="dropdown-item" href="{{ route('dev.mail.index') }}">Development mail inbox</a></li>
                                 @endif
                                 <li><a class="dropdown-item" href="{{ route('register') }}">Create account</a></li>
+                                <li><a class="dropdown-item" href="{{ route('admin.login') }}">Administrator login</a></li>
                             </ul>
                         </div>
                         <a class="btn btn-primary" href="{{ route('login') }}">Log in</a>

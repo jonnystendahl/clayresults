@@ -15,7 +15,7 @@ class ClubMembership extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'user_id',
+        'member_id',
         'role',
         'is_club_admin',
         'is_paid',
@@ -43,9 +43,14 @@ class ClubMembership extends Model
         return $this->belongsTo(Club::class);
     }
 
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->member();
     }
 
     public function renewalRequests(): HasMany

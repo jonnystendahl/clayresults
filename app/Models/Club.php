@@ -31,11 +31,16 @@ class Club extends Model
         return $this->hasMany(ClubMembership::class);
     }
 
-    public function users(): BelongsToMany
+    public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'club_memberships')
+        return $this->belongsToMany(Member::class, 'club_memberships', 'club_id', 'member_id')
             ->withPivot(['id', 'role', 'is_club_admin', 'is_paid', 'joined_on', 'last_paid_on', 'ends_on'])
             ->withTimestamps();
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->members();
     }
 
     public function newsPosts(): HasMany

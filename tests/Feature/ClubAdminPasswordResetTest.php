@@ -19,7 +19,7 @@ class ClubAdminPasswordResetTest extends TestCase
         $club = Club::factory()->create(['name' => 'North Range']);
 
         $club->memberships()->create([
-            'user_id' => $clubAdmin->id,
+            'member_id' => $clubAdmin->id,
             'role' => 'Board member',
             'is_club_admin' => true,
             'is_paid' => true,
@@ -27,7 +27,7 @@ class ClubAdminPasswordResetTest extends TestCase
         ]);
 
         $club->memberships()->create([
-            'user_id' => $member->id,
+            'member_id' => $member->id,
             'role' => 'Member',
             'is_club_admin' => false,
             'is_paid' => true,
@@ -105,7 +105,7 @@ class ClubAdminPasswordResetTest extends TestCase
         $club = Club::factory()->create();
 
         $club->memberships()->create([
-            'user_id' => $member->id,
+            'member_id' => $member->id,
             'role' => 'Member',
             'is_club_admin' => false,
             'is_paid' => true,
@@ -113,7 +113,7 @@ class ClubAdminPasswordResetTest extends TestCase
         ]);
 
         $club->memberships()->create([
-            'user_id' => $otherMember->id,
+            'member_id' => $otherMember->id,
             'role' => 'Member',
             'is_club_admin' => false,
             'is_paid' => true,
@@ -135,7 +135,7 @@ class ClubAdminPasswordResetTest extends TestCase
         $club = Club::factory()->create();
 
         $club->memberships()->create([
-            'user_id' => $clubAdmin->id,
+            'member_id' => $clubAdmin->id,
             'role' => 'Board member',
             'is_club_admin' => true,
             'is_paid' => true,

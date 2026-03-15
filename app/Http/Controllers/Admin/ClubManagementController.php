@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ClubRequest;
 use App\Models\Club;
 use App\Models\ClubMembership;
-use App\Models\User;
+use App\Models\Member;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -46,13 +46,13 @@ class ClubManagementController extends Controller
     public function edit(Club $club): View
     {
         $club->load([
-            'memberships.user' => fn ($query) => $query->orderBy('name')->orderBy('email'),
+            'memberships.member' => fn ($query) => $query->orderBy('name')->orderBy('email'),
         ]);
 
         return view('admin.clubs.edit', [
             'club' => $club,
-            'memberships' => $club->memberships->sortBy(fn ($membership) => $membership->user->name)->values(),
-            'users' => User::query()->orderBy('name')->orderBy('email')->get(),
+            'memberships' => $club->memberships->sortBy(fn ($membership) => $membership->member->name)->values(),
+            'members' => Member::query()->orderBy('name')->orderBy('email')->get(),
         ]);
     }
 

@@ -12,7 +12,7 @@ class AdminUserManagementTest extends TestCase
 
     public function test_guests_are_redirected_when_opening_admin_users(): void
     {
-        $this->get(route('admin.users.index'))
+        $this->get(route('admin.members.index'))
             ->assertRedirect(route('login'));
     }
 
@@ -21,7 +21,7 @@ class AdminUserManagementTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get(route('admin.users.index'))
+            ->get(route('admin.members.index'))
             ->assertForbidden();
     }
 
@@ -34,9 +34,9 @@ class AdminUserManagementTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->get(route('admin.users.index'))
+            ->get(route('admin.members.index'))
             ->assertOk()
-            ->assertSee('Manage users')
+            ->assertSee('Manage members')
             ->assertSee($managedUser->name)
             ->assertSee($managedUser->email);
     }
@@ -49,13 +49,13 @@ class AdminUserManagementTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->put(route('admin.users.update', $managedUser), [
+            ->put(route('admin.members.update', $managedUser), [
                 'name' => 'Updated Shooter',
                 'email' => 'updated@example.test',
                 'is_admin' => '1',
             ])
-            ->assertRedirect(route('admin.users.index'))
-            ->assertSessionHas('status', 'User updated.');
+            ->assertRedirect(route('admin.members.index'))
+            ->assertSessionHas('status', 'Member updated.');
 
         $this->assertDatabaseHas('users', [
             'id' => $managedUser->id,
@@ -70,12 +70,12 @@ class AdminUserManagementTest extends TestCase
         $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
-            ->from(route('admin.users.edit', $admin))
-            ->put(route('admin.users.update', $admin), [
+            ->from(route('admin.members.edit', $admin))
+            ->put(route('admin.members.update', $admin), [
                 'name' => $admin->name,
                 'email' => $admin->email,
             ])
-            ->assertRedirect(route('admin.users.edit', $admin))
+            ->assertRedirect(route('admin.members.edit', $admin))
             ->assertSessionHasErrors('is_admin');
 
         $this->assertDatabaseHas('users', [

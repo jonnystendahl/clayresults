@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Club Events | ClayResults'])
+@extends('layouts.app', ['title' => 'Club Events | KlubbManager'])
 
 @section('content')
     <div class="row g-4 g-xl-5 align-items-start">

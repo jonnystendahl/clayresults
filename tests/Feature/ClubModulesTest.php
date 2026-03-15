@@ -178,7 +178,7 @@ class ClubModulesTest extends TestCase
         $club = Club::factory()->create(['name' => 'West Skeet']);
 
         $membership = $club->memberships()->create([
-            'user_id' => $member->id,
+            'member_id' => $member->id,
             'role' => 'Member',
             'is_paid' => false,
             'joined_on' => '2026-01-01',
@@ -208,7 +208,7 @@ class ClubModulesTest extends TestCase
             'id' => $renewalRequest->id,
             'club_id' => $club->id,
             'club_membership_id' => $membership->id,
-            'user_id' => $member->id,
+            'member_id' => $member->id,
             'season_label' => '2026',
             'status' => 'pending',
         ]);

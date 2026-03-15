@@ -14,7 +14,7 @@ class ClubMembershipController extends Controller
     {
         $membership = $club->memberships()->create($request->validated());
 
-        $membership->user->syncMainClub();
+        $membership->member->syncMainClub();
 
         return redirect()
             ->route('admin.clubs.edit', $club)
@@ -35,11 +35,11 @@ class ClubMembershipController extends Controller
     public function destroy(Club $club, ClubMembership $clubMembership): RedirectResponse
     {
         $membership = $this->clubMembership($club, $clubMembership);
-        $user = $membership->user;
+        $member = $membership->member;
 
         $membership->delete();
 
-        $user->syncMainClub();
+        $member->syncMainClub();
 
         return redirect()
             ->route('admin.clubs.edit', $club)

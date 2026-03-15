@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TrainingResultRequest;
+use App\Models\Club;
+use App\Models\Member;
 use App\Models\TrainingResult;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,13 +14,19 @@ class TrainingResultController extends Controller
 {
     public function index(Request $request): View
     {
-        $trainingResults = $request->user()
+        /** @var Member $member */
+        $member = $request->user();
+        $activeClub = $member->mainClub;
+
+        $trainingResults = $member
             ->trainingResults()
+            ->when($activeClub instanceof Club, fn ($query) => $query->where('club_id', $activeClub->id))
             ->latest('performed_on')
             ->latest('created_at')
             ->get();
 
         return view('training-results.index', [
+            'activeClub' => $activeClub,
             'disciplines' => TrainingResult::DISCIPLINES,
             'trainingResults' => $trainingResults,
             'stats' => [
@@ -31,7 +39,20 @@ class TrainingResultController extends Controller
 
     public function store(TrainingResultRequest $request): RedirectResponse
     {
-        $request->user()->trainingResults()->create($request->validated());
+        /** @var Member $member */
+        $member = $request->user();
+        $membership = $member->mainClubMembership();
+
+        if ($membership === null) {
+            return redirect()
+                ->route('training-results.index')
+                ->withErrors(['club' => 'Choose a main club before saving results.']);
+        }
+
+        $member->trainingResults()->create([
+            ...$request->validated(),
+            'club_id' => $membership->club_id,
+        ]);
 
         return redirect()
             ->route('training-results.index')
@@ -66,7 +87,14 @@ class TrainingResultController extends Controller
 
     private function ownedResult(Request $request, TrainingResult $trainingResult): TrainingResult
     {
-        abort_unless($trainingResult->user->is($request->user()), 404);
+        /** @var Member $member */
+        $member = $request->user();
+
+        abort_unless($trainingResult->member->is($member), 404);
+
+        if ($trainingResult->club !== null) {
+            abort_unless($member->canAccessClub($trainingResult->club), 404);
+        }
 
         return $trainingResult;
     }
