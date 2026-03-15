@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/jonnystendahl/clayresults/compare/v0.1.7...v0.2.0) (2026-03-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Major change on how users are handled as members in a Club
+* Major change on how users are handled as members in a Club
+
+### Features
+
+* Major change on how users are handled as members in a Club ([f5228be](https://github.com/jonnystendahl/clayresults/commit/f5228be7ff6a87a22b0b6ea311d06ec5130723b6))
+* Major change on how users are handled as members in a Club ([c89bf39](https://github.com/jonnystendahl/clayresults/commit/c89bf392b0d5b6c7121032477632f91a3513aeb6))
+
 ### [0.1.7](https://github.com/jonnystendahl/clayresults/compare/v0.1.6...v0.1.7) (2026-03-15)
 
 
