@@ -9,10 +9,10 @@
                         <div class="section-label mb-2">Administration</div>
                         <h1 class="h2 fw-bold mb-0">Edit member</h1>
                     </div>
-                    <a class="btn btn-outline-primary" href="{{ route('admin.members.index') }}">Back to members</a>
+                    <a class="btn btn-outline-primary" href="{{ route('club-admin.clubs.edit', $club) }}">Back to {{ $club->name }}</a>
                 </div>
 
-                <form method="POST" action="{{ route('admin.members.update', $managedUser) }}" class="row g-3">
+                <form method="POST" action="{{ route('club-admin.clubs.members.update', [$club, $managedUser]) }}" class="row g-3">
                     @csrf
                     @method('PUT')
 
@@ -32,24 +32,39 @@
                         @enderror
                     </div>
 
-                    <div class="col-12">
-                        <div class="result-card p-4">
-                            <div class="form-check form-switch mb-0">
-                                <input class="form-check-input @error('is_admin') is-invalid @enderror" id="is_admin" name="is_admin" type="checkbox" role="switch" value="1" @checked(old('is_admin', $managedUser->is_admin))>
-                                <label class="form-check-label fw-semibold" for="is_admin">Administrator access</label>
-                                <div class="text-secondary mt-2">Administrators can open the admin area and manage all members.</div>
-                                @error('is_admin')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                    @if ($canEditAppAdministrator)
+                        <div class="col-12">
+                            <div class="result-card p-4">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input @error('is_admin') is-invalid @enderror" id="is_admin" name="is_admin" type="checkbox" role="switch" value="1" @checked(old('is_admin', $managedUser->is_admin))>
+                                    <label class="form-check-label fw-semibold" for="is_admin">Application administrator</label>
+                                    <div class="text-secondary mt-2">Application administrators can manage clubs, access admin login, and reset passwords across the application.</div>
+                                    @error('is_admin')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
 
                     <div class="col-12 d-flex flex-column flex-md-row gap-2 justify-content-between mt-3">
-                        <a class="btn btn-outline-primary" href="{{ route('admin.members.index') }}">Cancel</a>
+                        <a class="btn btn-outline-primary" href="{{ route('club-admin.clubs.edit', $club) }}">Cancel</a>
                         <button class="btn btn-primary" type="submit">Save member</button>
                     </div>
                 </form>
+
+                <hr class="my-4">
+
+                <div class="result-card p-4">
+                    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center">
+                        <div>
+                            <div class="section-label mb-2">Password help</div>
+                            <h2 class="h4 fw-bold mb-1">Temporary password</h2>
+                            <p class="text-secondary mb-0">Use the club home roster if you need to set a temporary password for this member.</p>
+                        </div>
+                        <a class="btn btn-outline-primary" href="{{ route('home') }}">Open club home</a>
+                    </div>
+                </div>
 
                 <hr class="my-4">
 

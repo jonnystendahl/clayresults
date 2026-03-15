@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AuthorizesClubAdministration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClubRequest;
 use App\Models\Club;
 use App\Models\ClubMembership;
-use App\Models\Member;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClubManagementController extends Controller
 {
+    use AuthorizesClubAdministration;
+
     public function index(): View
     {
         $clubs = Club::query()
@@ -39,12 +42,14 @@ class ClubManagementController extends Controller
         $club = Club::query()->create($request->validated());
 
         return redirect()
-            ->route('admin.clubs.edit', $club)
+            ->route('club-admin.clubs.edit', $club)
             ->with('status', 'Club created.');
     }
 
-    public function edit(Club $club): View
+    public function edit(Request $request, Club $club): View
     {
+        $this->ensureCanAdministerClub($request, $club);
+
         $club->load([
             'memberships.member' => fn ($query) => $query->orderBy('name')->orderBy('email'),
         ]);
@@ -52,7 +57,7 @@ class ClubManagementController extends Controller
         return view('admin.clubs.edit', [
             'club' => $club,
             'memberships' => $club->memberships->sortBy(fn ($membership) => $membership->member->name)->values(),
-            'members' => Member::query()->orderBy('name')->orderBy('email')->get(),
+            'canDeleteClub' => $request->user()?->isAdmin() ?? false,
         ]);
     }
 
@@ -61,7 +66,7 @@ class ClubManagementController extends Controller
         $club->update($request->validated());
 
         return redirect()
-            ->route('admin.clubs.edit', $club)
+            ->route('club-admin.clubs.edit', $club)
             ->with('status', 'Club updated.');
     }
 

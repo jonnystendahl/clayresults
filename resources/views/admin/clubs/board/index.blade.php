@@ -7,14 +7,14 @@
                 <div class="section-label mb-2">Administration</div>
                 <h1 class="h2 fw-bold mb-3">Manage public board information</h1>
                 <p class="text-secondary mb-4">Publish board and official roles separately from private membership records.</p>
-                <a class="btn btn-outline-primary w-100" href="{{ route('admin.clubs.edit', $club) }}">Back to club</a>
+                <a class="btn btn-outline-primary w-100" href="{{ route('club-admin.clubs.edit', $club) }}">Back to club</a>
             </div>
         </div>
         <div class="col-xl-8">
             <div class="content-panel p-4 p-lg-5 mb-4">
                 <div class="section-label mb-2">New board entry</div>
                 <h2 class="h3 fw-bold mb-4">Create public contact</h2>
-                <form method="POST" action="{{ route('admin.clubs.board.store', $club) }}" class="row g-3">
+                <form method="POST" action="{{ route('club-admin.clubs.board.store', $club) }}" class="row g-3">
                     @csrf
                     <div class="col-md-6"><input class="form-control" name="name" type="text" value="{{ old('name') }}" placeholder="Name" required></div>
                     <div class="col-md-6"><input class="form-control" name="title" type="text" value="{{ old('title') }}" placeholder="Role title" required></div>
@@ -29,7 +29,7 @@
             <div class="vstack gap-3">
                 @forelse ($boardMembers as $boardMember)
                     <div class="content-panel p-4 p-lg-5">
-                        <form method="POST" action="{{ route('admin.clubs.board.update', [$club, $boardMember]) }}" class="row g-3">
+                        <form method="POST" action="{{ route('club-admin.clubs.board.update', [$club, $boardMember]) }}" class="row g-3">
                             @csrf
                             @method('PUT')
                             <div class="col-md-6"><input class="form-control" name="name" type="text" value="{{ old('name', $boardMember->name) }}" required></div>
@@ -41,7 +41,7 @@
                             <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" id="board-public-{{ $boardMember->id }}" name="is_public" type="checkbox" value="1" @checked(old('is_public', $boardMember->is_public))><label class="form-check-label" for="board-public-{{ $boardMember->id }}">Visible on public pages</label></div></div>
                             <div class="col-12 d-flex justify-content-end"><button class="btn btn-primary" type="submit">Update board entry</button></div>
                         </form>
-                        <form method="POST" action="{{ route('admin.clubs.board.destroy', [$club, $boardMember]) }}" class="mt-3">@csrf @method('DELETE')<button class="btn btn-outline-secondary" type="submit">Delete</button></form>
+                        <form method="POST" action="{{ route('club-admin.clubs.board.destroy', [$club, $boardMember]) }}" class="mt-3">@csrf @method('DELETE')<button class="btn btn-outline-secondary" type="submit">Delete</button></form>
                     </div>
                 @empty
                     <div class="content-panel p-4 p-lg-5 text-center"><p class="text-secondary mb-0">No public board entries yet.</p></div>
