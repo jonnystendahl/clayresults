@@ -17,6 +17,7 @@ class ClubMembershipRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'is_club_admin' => $this->boolean('is_club_admin'),
             'is_paid' => $this->boolean('is_paid'),
         ]);
     }
@@ -41,6 +42,7 @@ class ClubMembershipRequest extends FormRequest
                     ->ignore($clubMembership),
             ],
             'role' => ['required', 'string', 'max:100'],
+            'is_club_admin' => ['required', 'boolean'],
             'is_paid' => ['required', 'boolean'],
             'joined_on' => ['required', 'date'],
             'last_paid_on' => ['nullable', 'date', 'after_or_equal:joined_on'],

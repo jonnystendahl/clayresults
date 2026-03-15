@@ -34,7 +34,7 @@ class Club extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'club_memberships')
-            ->withPivot(['id', 'role', 'is_paid', 'joined_on', 'last_paid_on', 'ends_on'])
+            ->withPivot(['id', 'role', 'is_club_admin', 'is_paid', 'joined_on', 'last_paid_on', 'ends_on'])
             ->withTimestamps();
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -81,7 +81,7 @@ class User extends Authenticatable
     public function clubs(): BelongsToMany
     {
         return $this->belongsToMany(Club::class, 'club_memberships')
-            ->withPivot(['id', 'role', 'is_paid', 'joined_on', 'last_paid_on', 'ends_on'])
+            ->withPivot(['id', 'role', 'is_club_admin', 'is_paid', 'joined_on', 'last_paid_on', 'ends_on'])
             ->withTimestamps();
     }
 
@@ -92,6 +92,18 @@ class User extends Authenticatable
         }
 
         return $this->clubs()->whereKey($club)->exists();
+    }
+
+    public function canAdministerClub(Club $club): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return $this->clubMemberships()
+            ->where('club_id', $club->id)
+            ->where('is_club_admin', true)
+            ->exists();
     }
 
     public function setMainClub(Club $club): void

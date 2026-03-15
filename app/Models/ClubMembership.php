@@ -17,6 +17,7 @@ class ClubMembership extends Model
     protected $fillable = [
         'user_id',
         'role',
+        'is_club_admin',
         'is_paid',
         'joined_on',
         'last_paid_on',
@@ -29,6 +30,7 @@ class ClubMembership extends Model
     protected function casts(): array
     {
         return [
+            'is_club_admin' => 'boolean',
             'is_paid' => 'boolean',
             'joined_on' => 'date',
             'last_paid_on' => 'date',

@@ -154,6 +154,19 @@
                     <div class="col-12">
                         <div class="result-card p-4">
                             <div class="form-check form-switch mb-0">
+                                <input class="form-check-input @error('is_club_admin') is-invalid @enderror" id="is_club_admin" name="is_club_admin" type="checkbox" role="switch" value="1" @checked(old('is_club_admin'))>
+                                <label class="form-check-label fw-semibold" for="is_club_admin">Club administrator</label>
+                                <div class="text-secondary mt-2">Club administrators can manage member passwords inside their own club area.</div>
+                                @error('is_club_admin')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="result-card p-4">
+                            <div class="form-check form-switch mb-0">
                                 <input class="form-check-input @error('is_paid') is-invalid @enderror" id="is_paid" name="is_paid" type="checkbox" role="switch" value="1" @checked(old('is_paid'))>
                                 <label class="form-check-label fw-semibold" for="is_paid">Membership paid</label>
                                 <div class="text-secondary mt-2">Turn this on when the current membership fee has been paid.</div>
@@ -232,12 +245,19 @@
 
                                     <div class="col-md-6">
                                         <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input" id="is_club_admin-{{ $membership->id }}" name="is_club_admin" type="checkbox" role="switch" value="1" @checked(old('is_club_admin', $membership->is_club_admin))>
+                                            <label class="form-check-label fw-semibold" for="is_club_admin-{{ $membership->id }}">Club administrator</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mt-2">
                                             <input class="form-check-input" id="is_paid-{{ $membership->id }}" name="is_paid" type="checkbox" role="switch" value="1" @checked(old('is_paid', $membership->is_paid))>
                                             <label class="form-check-label fw-semibold" for="is_paid-{{ $membership->id }}">Membership paid</label>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6 d-flex justify-content-md-end">
+                                    <div class="col-md-12 d-flex justify-content-md-end">
                                         <button class="btn btn-primary" type="submit">Save membership</button>
                                     </div>
                                 </form>

@@ -9,8 +9,9 @@
     <body>
         @php
             $navigationUser = $navigationUser ?? auth()->user();
-            $navigationClubs = $navigationUser?->clubs ?? collect();
-            $currentMainClub = $navigationUser?->mainClub;
+            $isUnverifiedUser = $navigationUser?->hasVerifiedEmail() === false;
+            $navigationClubs = $isUnverifiedUser ? collect() : ($navigationUser?->clubs ?? collect());
+            $currentMainClub = $isUnverifiedUser ? null : $navigationUser?->mainClub;
             $menuClub = $menuClub ?? $currentMainClub ?? null;
         @endphp
 
@@ -23,7 +24,7 @@
 
                 @auth
                     <div class="d-flex align-items-center gap-2 gap-lg-3 ms-auto flex-wrap justify-content-end">
-                        @if ($navigationClubs->isNotEmpty())
+                        @if (! $isUnverifiedUser && $navigationClubs->isNotEmpty())
                             <div class="dropdown">
                                 <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ $currentMainClub?->name ?? 'Choose club' }}
@@ -46,28 +47,32 @@
                             </div>
                         @endif
 
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Menu
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                                <li><a class="dropdown-item" href="{{ route('home') }}">Home</a></li>
-                                <li><a class="dropdown-item" href="{{ route('training-results.index') }}">Results</a></li>
-                                @if ($menuClub !== null)
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}">Public club page</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.news', $menuClub) }}">Club news</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.events', $menuClub) }}">Events</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.board', $menuClub) }}">Board information</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('clubs.renewal', $menuClub) }}">Membership renewal</a></li>
-                                @endif
-                                @if ($navigationUser?->isAdmin())
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Manage users</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('admin.clubs.index') }}">Manage clubs</a></li>
-                                @endif
-                            </ul>
-                        </div>
+                        @if ($isUnverifiedUser)
+                            <a class="btn btn-outline-primary" href="{{ route('verification.notice') }}">Verify email</a>
+                        @else
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Menu
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                    <li><a class="dropdown-item" href="{{ route('home') }}">Home</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('training-results.index') }}">Results</a></li>
+                                    @if ($menuClub !== null)
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ route('clubs.show', $menuClub) }}">Public club page</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('clubs.news', $menuClub) }}">Club news</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('clubs.events', $menuClub) }}">Events</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('clubs.board', $menuClub) }}">Board information</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('clubs.renewal', $menuClub) }}">Membership renewal</a></li>
+                                    @endif
+                                    @if ($navigationUser?->isAdmin())
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.users.index') }}">Manage users</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.clubs.index') }}">Manage clubs</a></li>
+                                    @endif
+                                </ul>
+                            </div>
+                        @endif
 
                         <span class="text-secondary d-none d-md-inline">{{ $navigationUser?->name }}</span>
                         <form method="POST" action="{{ route('logout') }}">
