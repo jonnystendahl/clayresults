@@ -1,6 +1,6 @@
 @php use Illuminate\Support\Str; @endphp
 
-@extends('layouts.app', ['title' => 'Your Results | ClayResults'])
+@extends('layouts.app', ['title' => 'Your Results | KlubbManager'])
 
 @section('content')
     <div class="row g-4 g-xl-5 align-items-start">
@@ -8,7 +8,11 @@
             <div class="content-panel p-4 p-lg-5 position-sticky" style="top: 6rem;">
                 <div class="section-label mb-2">New entry</div>
                 <h1 class="h3 fw-bold mb-3">Register a training result</h1>
-                <p class="text-secondary mb-4">Save every session with date, discipline, score, and a note about how the round felt.</p>
+                <p class="text-secondary mb-4">Save every session for {{ $activeClub?->name ?? 'your current club' }} with date, discipline, score, and a note about how the round felt.</p>
+
+                @error('club')
+                    <div class="alert alert-warning border-0 shadow-sm" role="alert">{{ $message }}</div>
+                @enderror
 
                 <form method="POST" action="{{ route('training-results.store') }}" class="vstack gap-3">
                     @csrf
@@ -61,7 +65,7 @@
                     <div class="stats-card p-4 h-100">
                         <div class="section-label mb-2">Sessions</div>
                         <div class="stats-value">{{ $stats['sessions'] }}</div>
-                        <div class="text-secondary">Total recorded practice rounds</div>
+                        <div class="text-secondary">Total recorded practice rounds{{ $activeClub ? ' in '.$activeClub->name : '' }}</div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -84,7 +88,7 @@
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                     <div>
                         <div class="section-label mb-2">History</div>
-                        <h2 class="h3 fw-bold mb-0">Your latest training results</h2>
+                        <h2 class="h3 fw-bold mb-0">Your latest training results{{ $activeClub ? ' for '.$activeClub->name : '' }}</h2>
                     </div>
                     <div class="text-secondary">{{ $trainingResults->count() }} saved {{ Str::plural('entry', $trainingResults->count()) }}</div>
                 </div>

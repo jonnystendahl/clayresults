@@ -1,17 +1,18 @@
-# ClayResults
+# KlubbManager
 
-ClayResults is a Laravel application for managing clay shooting clubs, their members, and club communication.
+KlubbManager is a Laravel application for managing clay shooting clubs, their members, and club communication.
 
 The app is built around club management first. Clubs can manage memberships, public club information, news, events, board contacts, and membership renewal flows. Individual training results are still supported, but they are now an extra function within the wider club-management platform.
 
 ## What It Does
 
 - Manages clubs, club memberships, and member roles
-- Supports users belonging to multiple clubs with a selectable main club
+- Supports members belonging to multiple clubs with a selectable main club
 - Publishes club news, events, board information, and membership renewal details
-- Lets administrators manage users and club-related administration flows
-- Stores personal training results as an additional user feature
-- Keeps each user's training results private to their own account
+- Lets application administrators manage members and club-related administration flows
+- Supports a separate administrator login at `/admin/login`
+- Stores training results as a club-scoped member feature
+- Keeps each member's training results private to their own account and current club context
 
 ## Tech Stack
 
@@ -39,7 +40,7 @@ Example `.env` database settings:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=clayresults
+DB_DATABASE=klubbmanager
 DB_USERNAME=your_mysql_user
 DB_PASSWORD=your_mysql_password
 ```
@@ -88,9 +89,9 @@ Create a database and a user with access to it.
 Example MySQL commands:
 
 ```sql
-CREATE DATABASE clayresults CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'clayresults'@'localhost' IDENTIFIED BY 'change_this_password';
-GRANT ALL PRIVILEGES ON clayresults.* TO 'clayresults'@'localhost';
+CREATE DATABASE klubbmanager CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'klubbmanager'@'localhost' IDENTIFIED BY 'change_this_password';
+GRANT ALL PRIVILEGES ON klubbmanager.* TO 'klubbmanager'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
@@ -214,8 +215,24 @@ On Apache or Nginx, make sure PHP can write to:
 - If you use Nginx, route all non-file requests to `public/index.php`.
 - Use HTTPS in production.
 
-If you need to give an existing user administrator access, run:
+## Accounts And Administration
+
+- The main authenticated model in the application is `Member`.
+- The database table is still `users`, but application code now uses member terminology.
+- Club memberships use `member_id` and are the link between clubs and authenticated members.
+- Training results are stored for a member and scoped to a club.
+- Application administrators use the separate login screen at `/admin/login`.
+
+If you need to give an existing member administrator access, run:
 
 ```bash
-php artisan users:make-admin user@example.com
+php artisan members:make-admin member@example.com
 ```
+
+The legacy command still works as an alias:
+
+```bash
+php artisan users:make-admin member@example.com
+```
+
+If `jonny.stendahl@skjulet.se` already exists as a member, the migration and seeder included in this repository promote that account to application administrator automatically.

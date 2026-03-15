@@ -17,7 +17,7 @@ class ClubRenewalController extends Controller
         return view('admin.clubs.renewal.edit', [
             'club' => $club,
             'renewalSetting' => $club->renewalSetting()->firstOrNew(),
-            'renewalRequests' => $club->renewalRequests()->with(['membership.user'])->latest('submitted_at')->get(),
+            'renewalRequests' => $club->renewalRequests()->with(['membership.member'])->latest('submitted_at')->get(),
         ]);
     }
 

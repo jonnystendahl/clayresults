@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => $club->name.' News | ClayResults'])
+@extends('layouts.app', ['title' => $club->name.' News | KlubbManager'])
 
 @section('content')
     <div class="content-panel p-4 p-lg-5 mb-4">

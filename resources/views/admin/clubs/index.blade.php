@@ -1,6 +1,6 @@
 @php use Illuminate\Support\Str; @endphp
 
-@extends('layouts.app', ['title' => 'Club Administration | ClayResults'])
+@extends('layouts.app', ['title' => 'Club Administration | KlubbManager'])
 
 @section('content')
     <div class="row g-4 g-xl-5 align-items-start">

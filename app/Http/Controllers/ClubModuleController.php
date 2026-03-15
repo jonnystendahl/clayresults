@@ -48,12 +48,12 @@ class ClubModuleController extends Controller
 
     public function renewal(Request $request, Club $club): View
     {
-        $user = $request->user();
+        $member = $request->user();
         $membership = null;
         $latestRenewalRequest = null;
 
-        if ($user !== null && $user->canAccessClub($club)) {
-            $membership = $user->clubMemberships()->where('club_id', $club->id)->first();
+        if ($member !== null && $member->canAccessClub($club)) {
+            $membership = $member->clubMemberships()->where('club_id', $club->id)->first();
             $latestRenewalRequest = $membership?->renewalRequests()->latest('submitted_at')->first();
         }
 
@@ -68,12 +68,12 @@ class ClubModuleController extends Controller
 
     public function storeRenewalRequest(StoreClubRenewalRequest $request, Club $club): RedirectResponse
     {
-        $user = $request->user();
+        $member = $request->user();
         $setting = $club->renewalSetting;
 
         abort_if($setting === null || ! $setting->is_open, 404);
 
-        $membership = $user->clubMemberships()->where('club_id', $club->id)->firstOrFail();
+        $membership = $member->clubMemberships()->where('club_id', $club->id)->firstOrFail();
         $seasonLabel = $setting->season_label ?: now()->format('Y');
 
         $existingRequest = $membership->renewalRequests()
@@ -90,7 +90,7 @@ class ClubModuleController extends Controller
 
         $club->renewalRequests()->create([
             'club_membership_id' => $membership->id,
-            'user_id' => $user->id,
+            'member_id' => $member->id,
             'season_label' => $seasonLabel,
             'status' => 'pending',
             'note' => $request->validated('note'),

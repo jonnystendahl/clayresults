@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
+use App\Models\Member;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,12 +25,12 @@ class AdminUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->route('user');
+        /** @var Member $member */
+        $member = $this->route('member');
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($user)],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(Member::class)->ignore($member)],
             'is_admin' => ['required', 'boolean'],
         ];
     }

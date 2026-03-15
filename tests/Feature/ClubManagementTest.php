@@ -75,7 +75,7 @@ class ClubManagementTest extends TestCase
 
         $this->actingAs($admin)
             ->post(route('admin.clubs.memberships.store', $club), [
-                'user_id' => $member->id,
+                'member_id' => $member->id,
                 'role' => 'Board member',
                 'is_club_admin' => '1',
                 'is_paid' => '1',
@@ -91,7 +91,7 @@ class ClubManagementTest extends TestCase
 
         $this->assertDatabaseHas('club_memberships', [
             'club_id' => $club->id,
-            'user_id' => $member->id,
+            'member_id' => $member->id,
             'role' => 'Board member',
             'is_club_admin' => 1,
             'is_paid' => 1,
@@ -101,7 +101,7 @@ class ClubManagementTest extends TestCase
 
         $this->actingAs($admin)
             ->put(route('admin.clubs.memberships.update', [$club, $membership]), [
-                'user_id' => $member->id,
+                'member_id' => $member->id,
                 'role' => 'Official',
                 'is_club_admin' => '0',
                 'joined_on' => '2026-01-15',
@@ -140,7 +140,7 @@ class ClubManagementTest extends TestCase
         $club = Club::factory()->create();
 
         $club->memberships()->create([
-            'user_id' => $member->id,
+            'member_id' => $member->id,
             'role' => 'Member',
             'is_paid' => true,
             'joined_on' => '2026-01-01',
@@ -159,7 +159,7 @@ class ClubManagementTest extends TestCase
 
         $this->assertDatabaseMissing('club_memberships', [
             'club_id' => $club->id,
-            'user_id' => $member->id,
+            'member_id' => $member->id,
         ]);
     }
 }

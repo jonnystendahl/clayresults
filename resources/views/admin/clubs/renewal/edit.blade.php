@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Club Renewal | ClayResults'])
+@extends('layouts.app', ['title' => 'Club Renewal | KlubbManager'])
 
 @section('content')
     <div class="row g-4 g-xl-5 align-items-start">
@@ -31,7 +31,7 @@
                         <div class="result-card p-4">
                             <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-3">
                                 <div>
-                                    <div class="fw-semibold">{{ $renewalRequest->membership->user->name }}</div>
+                                    <div class="fw-semibold">{{ $renewalRequest->membership->member->name }}</div>
                                     <div class="text-secondary small">{{ $renewalRequest->season_label ?: 'Current season' }}</div>
                                 </div>
                                 <span class="badge text-bg-light border">{{ ucfirst($renewalRequest->status) }}</span>

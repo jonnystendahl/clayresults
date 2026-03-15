@@ -9,20 +9,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
-class AuthenticatedSessionController extends Controller
+class AdminAuthenticatedSessionController extends Controller
 {
     public function create(): View
     {
         return view('auth.login', [
-            'loginTitle' => 'Log in | KlubbManager',
-            'loginEyebrow' => 'Welcome back',
-            'loginHeading' => 'Log in to your club account',
-            'loginDescription' => 'Pick up where you left off and register the next round for your current club.',
-            'loginAction' => route('login'),
-            'loginButtonLabel' => 'Log in',
-            'alternateLoginUrl' => route('admin.login'),
-            'alternateLoginLabel' => 'Administrator login',
-            'showRegisterLink' => true,
+            'loginTitle' => 'Admin Login | KlubbManager',
+            'loginEyebrow' => 'Administration',
+            'loginHeading' => 'Log in to the administrator area',
+            'loginDescription' => 'Use an administrator account to manage clubs, members, and application settings.',
+            'loginAction' => route('admin.login.store'),
+            'loginButtonLabel' => 'Log in as administrator',
+            'alternateLoginUrl' => route('login'),
+            'alternateLoginLabel' => 'Member login',
+            'showRegisterLink' => false,
         ]);
     }
 
@@ -44,20 +44,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if (! $request->user()?->isAdmin()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'email' => 'This account does not have administrator access.',
+            ]);
+        }
+
         if ($request->user()?->must_change_password) {
             return redirect()->route('password.change.edit');
         }
 
-        return redirect()->intended(route('home'));
-    }
-
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('home');
+        return redirect()->intended(route('admin.members.index'));
     }
 }

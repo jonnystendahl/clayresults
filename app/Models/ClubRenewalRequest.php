@@ -15,7 +15,7 @@ class ClubRenewalRequest extends Model
      */
     protected $fillable = [
         'club_membership_id',
-        'user_id',
+        'member_id',
         'season_label',
         'status',
         'note',
@@ -45,8 +45,13 @@ class ClubRenewalRequest extends Model
         return $this->belongsTo(ClubMembership::class, 'club_membership_id');
     }
 
+    public function member(): BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->member();
     }
 }

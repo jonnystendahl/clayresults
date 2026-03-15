@@ -27,13 +27,13 @@ class HomePageTest extends TestCase
         ]);
 
         $clubOne->memberships()->create([
-            'user_id' => User::factory()->create()->id,
+            'member_id' => User::factory()->create()->id,
             'role' => 'Member',
             'is_paid' => true,
             'joined_on' => '2026-01-01',
         ]);
         $clubTwo->memberships()->create([
-            'user_id' => User::factory()->create()->id,
+            'member_id' => User::factory()->create()->id,
             'role' => 'Board member',
             'is_paid' => true,
             'joined_on' => '2026-01-10',
@@ -128,7 +128,7 @@ class HomePageTest extends TestCase
         ]);
 
         $mainClub->memberships()->create([
-            'user_id' => $user->id,
+            'member_id' => $user->id,
             'role' => 'Official',
             'is_paid' => true,
             'joined_on' => '2026-01-01',
@@ -136,7 +136,7 @@ class HomePageTest extends TestCase
             'ends_on' => '2026-12-31',
         ]);
         $otherClub->memberships()->create([
-            'user_id' => $user->id,
+            'member_id' => $user->id,
             'role' => 'Member',
             'is_paid' => false,
             'joined_on' => '2026-01-15',
@@ -174,13 +174,13 @@ class HomePageTest extends TestCase
         ]);
 
         $firstClub->memberships()->create([
-            'user_id' => $user->id,
+            'member_id' => $user->id,
             'role' => 'Member',
             'is_paid' => true,
             'joined_on' => '2026-01-01',
         ]);
         $secondClub->memberships()->create([
-            'user_id' => $user->id,
+            'member_id' => $user->id,
             'role' => 'Board member',
             'is_paid' => true,
             'joined_on' => '2026-02-01',

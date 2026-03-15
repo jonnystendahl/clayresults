@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Edit Club | ClayResults'])
+@extends('layouts.app', ['title' => 'Edit Club | KlubbManager'])
 
 @section('content')
     <div class="row g-4 g-xl-5 align-items-start">
@@ -107,14 +107,14 @@
                     @csrf
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold" for="user_id">User</label>
-                        <select class="form-select @error('user_id') is-invalid @enderror" id="user_id" name="user_id" required>
-                            <option value="">Choose user</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>{{ $user->name }} ({{ $user->email }})</option>
+                        <label class="form-label fw-semibold" for="member_id">Member</label>
+                        <select class="form-select @error('member_id') is-invalid @enderror" id="member_id" name="member_id" required>
+                            <option value="">Choose member</option>
+                            @foreach ($members as $member)
+                                <option value="{{ $member->id }}" @selected(old('member_id') == $member->id)>{{ $member->name }} ({{ $member->email }})</option>
                             @endforeach
                         </select>
-                        @error('user_id')
+                        @error('member_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -202,8 +202,8 @@
                             <div class="result-card p-4">
                                 <div class="d-flex flex-column flex-lg-row justify-content-between gap-3 mb-3">
                                     <div>
-                                        <div class="fw-semibold">{{ $membership->user->name }}</div>
-                                        <div class="text-secondary small">{{ $membership->user->email }}</div>
+                                        <div class="fw-semibold">{{ $membership->member->name }}</div>
+                                        <div class="text-secondary small">{{ $membership->member->email }}</div>
                                     </div>
                                     <div class="d-flex align-items-center gap-2 flex-wrap">
                                         @if ($membership->is_paid)
@@ -221,7 +221,7 @@
                                     @csrf
                                     @method('PUT')
 
-                                    <input name="user_id" type="hidden" value="{{ $membership->user_id }}">
+                                    <input name="member_id" type="hidden" value="{{ $membership->member_id }}">
 
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold" for="role-{{ $membership->id }}">Role</label>

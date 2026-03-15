@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Club;
-use App\Models\User;
+use App\Models\Member;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -67,31 +67,31 @@ class ClubTestDataSeeder extends Seeder
             );
 
             $clubSlug = Str::slug($club->name);
-            $seedUsers = User::query()
+            $seedMembers = Member::query()
                 ->where('email', 'like', sprintf('seed+%s-%%@example.com', $clubSlug))
                 ->get();
 
-            if ($seedUsers->isNotEmpty()) {
-                $club->memberships()->whereIn('user_id', $seedUsers->modelKeys())->delete();
+            if ($seedMembers->isNotEmpty()) {
+                $club->memberships()->whereIn('member_id', $seedMembers->modelKeys())->delete();
 
-                User::query()
-                    ->whereKey($seedUsers->modelKeys())
+                Member::query()
+                    ->whereKey($seedMembers->modelKeys())
                     ->whereDoesntHave('clubMemberships')
                     ->delete();
             }
 
             foreach (range(1, fake()->numberBetween(1, 5)) as $memberNumber) {
-                $user = User::query()->firstOrNew([
+                $member = Member::query()->firstOrNew([
                     'email' => sprintf('seed+%s-%d@example.com', $clubSlug, $memberNumber),
                 ]);
 
-                $user->name = fake()->name();
-                $user->email_verified_at = now();
-                $user->password = 'password';
-                $user->is_admin = false;
-                $user->remember_token = Str::random(10);
-                $user->main_club_id = $club->id;
-                $user->save();
+                $member->name = fake()->name();
+                $member->email_verified_at = now();
+                $member->password = 'password';
+                $member->is_admin = false;
+                $member->remember_token = Str::random(10);
+                $member->main_club_id = $club->id;
+                $member->save();
 
                 $joinedOn = fake()->dateTimeBetween('-3 years', '-1 month');
                 $isPaid = fake()->boolean(80);
@@ -100,7 +100,7 @@ class ClubTestDataSeeder extends Seeder
                     : null;
 
                 $club->memberships()->create([
-                    'user_id' => $user->id,
+                    'member_id' => $member->id,
                     'role' => fake()->randomElement(['member', 'trainer', 'board']),
                     'is_paid' => $isPaid,
                     'joined_on' => $joinedOn,

@@ -1,14 +1,14 @@
 @php use Illuminate\Support\Str; @endphp
 
-@extends('layouts.app', ['title' => 'User Administration | ClayResults'])
+@extends('layouts.app', ['title' => 'Member Administration | KlubbManager'])
 
 @section('content')
     <div class="row g-4 g-xl-5 align-items-start">
         <div class="col-xl-4">
             <div class="content-panel p-4 p-lg-5 position-sticky" style="top: 6rem;">
                 <div class="section-label mb-2">Administration</div>
-                <h1 class="h3 fw-bold mb-3">Manage users</h1>
-                <p class="text-secondary mb-0">Review all registered shooters, update profile details, and choose who has administrator access.</p>
+                <h1 class="h3 fw-bold mb-3">Manage members</h1>
+                <p class="text-secondary mb-0">Review all registered members, update profile details, and choose who has administrator access.</p>
             </div>
         </div>
 
@@ -16,9 +16,9 @@
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <div class="stats-card p-4 h-100">
-                        <div class="section-label mb-2">Users</div>
+                        <div class="section-label mb-2">Members</div>
                         <div class="stats-value">{{ $stats['total'] }}</div>
-                        <div class="text-secondary">Total registered accounts</div>
+                        <div class="text-secondary">Total registered member accounts</div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -32,7 +32,7 @@
                     <div class="stats-card p-4 h-100">
                         <div class="section-label mb-2">Members</div>
                         <div class="stats-value">{{ $stats['members'] }}</div>
-                        <div class="text-secondary">Standard user accounts</div>
+                        <div class="text-secondary">Standard member accounts</div>
                     </div>
                 </div>
             </div>
@@ -41,9 +41,9 @@
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                     <div>
                         <div class="section-label mb-2">Directory</div>
-                        <h2 class="h3 fw-bold mb-0">All users</h2>
+                        <h2 class="h3 fw-bold mb-0">All members</h2>
                     </div>
-                    <div class="text-secondary">{{ $users->count() }} registered {{ Str::plural('user', $users->count()) }}</div>
+                    <div class="text-secondary">{{ $users->count() }} registered {{ Str::plural('member', $users->count()) }}</div>
                 </div>
 
                 <div class="table-responsive">
@@ -70,12 +70,12 @@
                                         @if ($user->is_admin)
                                             <span class="badge text-bg-success">Administrator</span>
                                         @else
-                                            <span class="badge text-bg-secondary">User</span>
+                                            <span class="badge text-bg-secondary">Member</span>
                                         @endif
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-end">
-                                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.users.edit', $user) }}">Edit user</a>
+                                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.members.edit', $user) }}">Edit member</a>
                                         </div>
                                     </td>
                                 </tr>

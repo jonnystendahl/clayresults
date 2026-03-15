@@ -1,6 +1,6 @@
 @php use Illuminate\Support\Str; @endphp
 
-@extends('layouts.app', ['title' => 'Club Manager | ClayResults'])
+@extends('layouts.app', ['title' => 'Club Manager | KlubbManager'])
 
 @section('content')
     <div class="row g-4 g-xl-5 align-items-start mb-4 mb-lg-5" id="app-overview">
@@ -11,7 +11,7 @@
                         <span class="section-label">Club manager</span>
                         <h1 class="display-4 fw-bold mt-3 mb-4 display-balance">A shared home for clubs, members, training results, and the workflows around them.</h1>
                         <p class="lead text-secondary mb-4">
-                            ClayResults is moving toward a broader club platform. This start page now focuses on clubs first,
+                            KlubbManager is moving toward a broader club platform. This start page now focuses on clubs first,
                             with room for member administration, result tracking, payments, and club communication as the application grows.
                         </p>
 

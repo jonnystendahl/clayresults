@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => ($mainClub?->name ? $mainClub->name.' | ClayResults' : 'Your Club | ClayResults')])
+@extends('layouts.app', ['title' => ($mainClub?->name ? $mainClub->name.' | KlubbManager' : 'Your Club | KlubbManager')])
 
 @section('content')
     @if ($mainClub === null)
@@ -163,8 +163,8 @@
                                 @foreach ($mainClub->memberships as $membership)
                                     <tr>
                                         <td class="fw-semibold">
-                                            {{ $membership->user->name }}
-                                            @if ($membership->user->is(auth()->user()))
+                                            {{ $membership->member->name }}
+                                            @if ($membership->member->is(auth()->user()))
                                                 <span class="badge text-bg-light border ms-2">You</span>
                                             @endif
                                         </td>
@@ -194,10 +194,10 @@
                                         <tr class="collapse" id="temporary-password-{{ $membership->id }}">
                                             <td colspan="5">
                                                 <div class="result-card p-4 my-2">
-                                                    <div class="fw-semibold mb-2">Temporary password for {{ $membership->user->name }}</div>
+                                                    <div class="fw-semibold mb-2">Temporary password for {{ $membership->member->name }}</div>
                                                     <p class="text-secondary small mb-3">Set a temporary password that the member can use to log in and change later.</p>
 
-                                                    <form method="POST" action="{{ route('clubs.members.password.store', [$mainClub, $membership->user]) }}" class="row g-3 align-items-end">
+                                                    <form method="POST" action="{{ route('clubs.members.password.store', [$mainClub, $membership->member]) }}" class="row g-3 align-items-end">
                                                         @csrf
 
                                                         <div class="col-md-5">

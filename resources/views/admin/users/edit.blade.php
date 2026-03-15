@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Edit User | ClayResults'])
+@extends('layouts.app', ['title' => 'Edit Member | KlubbManager'])
 
 @section('content')
     <div class="row justify-content-center">
@@ -7,12 +7,12 @@
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
                     <div>
                         <div class="section-label mb-2">Administration</div>
-                        <h1 class="h2 fw-bold mb-0">Edit user</h1>
+                        <h1 class="h2 fw-bold mb-0">Edit member</h1>
                     </div>
-                    <a class="btn btn-outline-primary" href="{{ route('admin.users.index') }}">Back to users</a>
+                    <a class="btn btn-outline-primary" href="{{ route('admin.members.index') }}">Back to members</a>
                 </div>
 
-                <form method="POST" action="{{ route('admin.users.update', $managedUser) }}" class="row g-3">
+                <form method="POST" action="{{ route('admin.members.update', $managedUser) }}" class="row g-3">
                     @csrf
                     @method('PUT')
 
@@ -37,7 +37,7 @@
                             <div class="form-check form-switch mb-0">
                                 <input class="form-check-input @error('is_admin') is-invalid @enderror" id="is_admin" name="is_admin" type="checkbox" role="switch" value="1" @checked(old('is_admin', $managedUser->is_admin))>
                                 <label class="form-check-label fw-semibold" for="is_admin">Administrator access</label>
-                                <div class="text-secondary mt-2">Administrators can open the admin area and manage all users.</div>
+                                <div class="text-secondary mt-2">Administrators can open the admin area and manage all members.</div>
                                 @error('is_admin')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -46,8 +46,8 @@
                     </div>
 
                     <div class="col-12 d-flex flex-column flex-md-row gap-2 justify-content-between mt-3">
-                        <a class="btn btn-outline-primary" href="{{ route('admin.users.index') }}">Cancel</a>
-                        <button class="btn btn-primary" type="submit">Save user</button>
+                        <a class="btn btn-outline-primary" href="{{ route('admin.members.index') }}">Cancel</a>
+                        <button class="btn btn-primary" type="submit">Save member</button>
                     </div>
                 </form>
 
@@ -58,7 +58,7 @@
                     <h2 class="h4 fw-bold mb-3">Current club roles</h2>
 
                     @if ($managedUser->clubMemberships->isEmpty())
-                        <p class="text-secondary mb-0">This user is not assigned to any club yet.</p>
+                        <p class="text-secondary mb-0">This member is not assigned to any club yet.</p>
                     @else
                         <div class="vstack gap-3">
                             @foreach ($managedUser->clubMemberships->sortBy(fn ($membership) => $membership->club->name) as $membership)

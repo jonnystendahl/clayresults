@@ -26,44 +26,44 @@ class HomeController extends Controller
             ]);
         }
 
-        $user = $request->user();
+        $member = $request->user();
 
-        if ($user->must_change_password) {
+        if ($member->must_change_password) {
             return redirect()->route('password.change.edit');
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if (! $member->hasVerifiedEmail()) {
             return redirect()->route('verification.notice');
         }
 
-        $user->syncMainClub();
-        $user->load([
+        $member->syncMainClub();
+        $member->load([
             'clubs' => fn ($query) => $query->orderBy('name'),
             'mainClub',
         ]);
 
-        $mainClub = $user->mainClub;
+        $mainClub = $member->mainClub;
         $mainMembership = null;
 
         if ($mainClub !== null) {
             $mainClub->load([
-                'memberships.user' => fn ($query) => $query->orderBy('name')->orderBy('email'),
+                'memberships.member' => fn ($query) => $query->orderBy('name')->orderBy('email'),
                 'newsPosts' => fn ($query) => $query->whereNotNull('published_at')->where('published_at', '<=', now())->latest('published_at'),
                 'events' => fn ($query) => $query->whereNotNull('published_at')->where('published_at', '<=', now())->orderBy('starts_at'),
                 'boardMembers' => fn ($query) => $query->where('is_public', true)->orderBy('sort_order')->orderBy('name'),
                 'renewalSetting',
             ]);
 
-            $mainMembership = $user->clubMemberships()
+            $mainMembership = $member->clubMemberships()
                 ->where('club_id', $mainClub->id)
                 ->first();
         }
 
         return view('home.authenticated', [
-            'clubs' => $user->clubs,
+            'clubs' => $member->clubs,
             'mainClub' => $mainClub,
             'mainMembership' => $mainMembership,
-            'canManageMainClub' => $mainClub !== null && $user->canAdministerClub($mainClub),
+            'canManageMainClub' => $mainClub !== null && $member->canAdministerClub($mainClub),
             'menuClub' => $mainClub,
         ]);
     }

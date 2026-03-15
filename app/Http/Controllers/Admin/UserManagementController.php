@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminUserRequest;
-use App\Models\User;
+use App\Models\Member;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -12,7 +12,7 @@ class UserManagementController extends Controller
 {
     public function index(): View
     {
-        $users = User::query()
+        $users = Member::query()
             ->orderBy('name')
             ->orderBy('email')
             ->get();
@@ -27,29 +27,29 @@ class UserManagementController extends Controller
         ]);
     }
 
-    public function edit(User $user): View
+    public function edit(Member $member): View
     {
-        $user->load('clubMemberships.club');
+        $member->load('clubMemberships.club');
 
         return view('admin.users.edit', [
-            'managedUser' => $user,
+            'managedUser' => $member,
         ]);
     }
 
-    public function update(AdminUserRequest $request, User $user): RedirectResponse
+    public function update(AdminUserRequest $request, Member $member): RedirectResponse
     {
         $validated = $request->validated();
 
-        if ($user->isAdmin() && ! $validated['is_admin'] && User::query()->where('is_admin', true)->count() === 1) {
+        if ($member->isAdmin() && ! $validated['is_admin'] && Member::query()->where('is_admin', true)->count() === 1) {
             return back()
                 ->withErrors(['is_admin' => 'At least one administrator must remain.'])
                 ->withInput();
         }
 
-        $user->update($validated);
+        $member->update($validated);
 
         return redirect()
-            ->route('admin.users.index')
-            ->with('status', 'User updated.');
+            ->route('admin.members.index')
+            ->with('status', 'Member updated.');
     }
 }
