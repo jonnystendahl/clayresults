@@ -37,9 +37,6 @@
                                                 @csrf
                                                 <button class="dropdown-item d-flex justify-content-between align-items-center gap-3" type="submit">
                                                     <span>{{ $club->name }}</span>
-                                                    @if ($currentMainClub?->is($club))
-                                                        <span class="badge text-bg-success">Main</span>
-                                                    @endif
                                                 </button>
                                             </form>
                                         </li>

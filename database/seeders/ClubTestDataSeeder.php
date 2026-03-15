@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Club;
+use App\Models\ClubMembership;
 use App\Models\Member;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ClubTestDataSeeder extends Seeder
 {
@@ -14,12 +16,12 @@ class ClubTestDataSeeder extends Seeder
      */
     private const CLUBS = [
         [
-            'name' => 'Demo North Clay Club',
-            'address' => 'Granitvagen 12, Visby',
-            'contact_person_name' => 'Anna Berg',
-            'contact_person_email' => 'north@demo-clubs.test',
-            'contact_person_phone' => '070-100 10 10',
-            'note' => 'Sample club seeded for local development.',
+            'name' => 'Visby Lerduve Klubb',
+            'address' => 'Hejdeby',
+            'contact_person_name' => 'Jonny Stendahl',
+            'contact_person_email' => 'skytte@skjulet.se',
+            'contact_person_phone' => '0705364214',
+            'note' => 'Board member',
         ],
         [
             'name' => 'Demo South Trap Club',
@@ -29,85 +31,98 @@ class ClubTestDataSeeder extends Seeder
             'contact_person_phone' => '070-200 20 20',
             'note' => 'Sample club seeded for local development.',
         ],
-        [
-            'name' => 'Demo East Sporting Club',
-            'address' => 'Tallstigen 5, Uppsala',
-            'contact_person_name' => 'Sara Nystrom',
-            'contact_person_email' => 'east@demo-clubs.test',
-            'contact_person_phone' => '070-300 30 30',
-            'note' => 'Sample club seeded for local development.',
-        ],
-        [
-            'name' => 'Demo West Skeet Club',
-            'address' => 'Skyttegatan 14, Goteborg',
-            'contact_person_name' => 'Erik Holm',
-            'contact_person_email' => 'west@demo-clubs.test',
-            'contact_person_phone' => '070-400 40 40',
-            'note' => 'Sample club seeded for local development.',
-        ],
-        [
-            'name' => 'Demo Central Shotgun Club',
-            'address' => 'Banvallen 21, Orebro',
-            'contact_person_name' => 'Maria Ek',
-            'contact_person_email' => 'central@demo-clubs.test',
-            'contact_person_phone' => '070-500 50 50',
-            'note' => 'Sample club seeded for local development.',
-        ],
     ];
 
     /**
-     * Seed sample clubs with random members.
+     * @var array{name: string, email: string, email_verified_at: string, password: string, must_change_password: bool, is_admin: bool}
+     */
+    private const PRIMARY_MEMBER = [
+        'name' => 'Jonny Stendahl',
+        'email' => 'jonny.stendahl@skjulet.se',
+        'email_verified_at' => '2026-03-09 09:35:19',
+        'password' => 'password',
+        'must_change_password' => false,
+        'is_admin' => true,
+    ];
+
+    /**
+     * @var array{role: string, is_club_admin: bool, is_paid: bool, joined_on: string, last_paid_on: string, ends_on: string}
+     */
+    private const PRIMARY_MEMBERSHIP = [
+        'role' => 'Board member',
+        'is_club_admin' => false,
+        'is_paid' => true,
+        'joined_on' => '2022-04-01',
+        'last_paid_on' => '2026-03-03',
+        'ends_on' => '2027-03-02',
+    ];
+
+    /**
+     * Seed the trimmed local-development dataset.
      */
     public function run(): void
     {
-        collect(self::CLUBS)->each(function (array $clubData): void {
-            $club = Club::query()->updateOrCreate(
-                ['name' => $clubData['name']],
-                $clubData,
-            );
+        DB::transaction(function (): void {
+            DB::table('training_results')->delete();
+            DB::table('club_renewal_requests')->delete();
+            DB::table('club_news_posts')->delete();
+            DB::table('club_events')->delete();
+            DB::table('club_board_members')->delete();
+            DB::table('club_renewal_settings')->delete();
 
-            $clubSlug = Str::slug($club->name);
-            $seedMembers = Member::query()
-                ->where('email', 'like', sprintf('seed+%s-%%@example.com', $clubSlug))
-                ->get();
+            $clubs = collect(self::CLUBS)
+                ->mapWithKeys(function (array $clubData): array {
+                    $club = Club::query()->updateOrCreate(
+                        ['name' => $clubData['name']],
+                        $clubData,
+                    );
 
-            if ($seedMembers->isNotEmpty()) {
-                $club->memberships()->whereIn('member_id', $seedMembers->modelKeys())->delete();
+                    return [$club->name => $club];
+                });
 
-                Member::query()
-                    ->whereKey($seedMembers->modelKeys())
-                    ->whereDoesntHave('clubMemberships')
-                    ->delete();
+            Club::query()
+                ->whereNotIn('name', $clubs->keys()->all())
+                ->delete();
+
+            $member = Member::query()->firstOrNew([
+                'email' => self::PRIMARY_MEMBER['email'],
+            ]);
+
+            $member->fill([
+                'name' => self::PRIMARY_MEMBER['name'],
+                'email_verified_at' => Carbon::parse(self::PRIMARY_MEMBER['email_verified_at']),
+                'must_change_password' => self::PRIMARY_MEMBER['must_change_password'],
+                'is_admin' => self::PRIMARY_MEMBER['is_admin'],
+            ]);
+
+            if (! $member->exists) {
+                $member->password = self::PRIMARY_MEMBER['password'];
             }
 
-            foreach (range(1, fake()->numberBetween(1, 5)) as $memberNumber) {
-                $member = Member::query()->firstOrNew([
-                    'email' => sprintf('seed+%s-%d@example.com', $clubSlug, $memberNumber),
-                ]);
+            $member->save();
 
-                $member->name = fake()->name();
-                $member->email_verified_at = now();
-                $member->password = 'password';
-                $member->is_admin = false;
-                $member->remember_token = Str::random(10);
-                $member->main_club_id = $club->id;
-                $member->save();
+            Member::query()
+                ->where('email', '!=', self::PRIMARY_MEMBER['email'])
+                ->delete();
 
-                $joinedOn = fake()->dateTimeBetween('-3 years', '-1 month');
-                $isPaid = fake()->boolean(80);
-                $lastPaidOn = $isPaid
-                    ? fake()->dateTimeBetween($joinedOn, 'now')
-                    : null;
+            $visbyClub = $clubs->get('Visby Lerduve Klubb');
 
-                $club->memberships()->create([
+            $member->forceFill([
+                'main_club_id' => $visbyClub?->id,
+            ])->save();
+
+            ClubMembership::query()
+                ->where('member_id', '!=', $member->id)
+                ->orWhere('club_id', '!=', $visbyClub?->id)
+                ->delete();
+
+            ClubMembership::query()->updateOrCreate(
+                [
+                    'club_id' => $visbyClub?->id,
                     'member_id' => $member->id,
-                    'role' => fake()->randomElement(['member', 'trainer', 'board']),
-                    'is_paid' => $isPaid,
-                    'joined_on' => $joinedOn,
-                    'last_paid_on' => $lastPaidOn,
-                    'ends_on' => $isPaid ? fake()->dateTimeBetween('now', '+1 year') : null,
-                ]);
-            }
+                ],
+                self::PRIMARY_MEMBERSHIP,
+            );
         });
     }
 }

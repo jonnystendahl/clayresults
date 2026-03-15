@@ -123,9 +123,6 @@
                                             <div class="fw-semibold">{{ $club->name }}</div>
                                             <div class="text-secondary small">{{ $club->address ?: 'Address not set yet.' }}</div>
                                         </div>
-                                        @if ($mainClub->is($club))
-                                            <span class="badge text-bg-success">Main club</span>
-                                        @endif
                                     </div>
                                 </div>
                             </div>

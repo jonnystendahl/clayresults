@@ -13,7 +13,7 @@ This file collects short project notes that were previously kept in repository m
 
 ## Seed And Mail Notes
 - Demo club/member seed data lives in `Database\Seeders\ClubTestDataSeeder` and is invoked from `DatabaseSeeder`.
-- The demo seeder creates 5 fixed demo clubs with 1 to 5 seeded members each.
+- The demo seeder now recreates a trimmed dataset: `jonny.stendahl@skjulet.se`, `Visby Lerduve Klubb`, `Demo South Trap Club`, and Jonny's single Visby membership.
 - Local development mail uses SMTP on `127.0.0.1:1025` with `scripts/dev_mail_catcher.py`.
 - Captured local messages are browsable at `/dev/mail`.
 
