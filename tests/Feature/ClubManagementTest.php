@@ -44,7 +44,7 @@ class ClubManagementTest extends TestCase
         $club = Club::query()->where('name', 'Stockholm Lerduveklubb')->firstOrFail();
 
         $this->actingAs($admin)
-            ->put(route('admin.clubs.update', $club), [
+            ->put(route('club-admin.clubs.update', $club), [
                 'name' => 'Stockholm Lerduveklubb',
                 'address' => 'Skjutbanevagen 12, Stockholm',
                 'contact_person_name' => 'Anna Coach',
@@ -52,7 +52,7 @@ class ClubManagementTest extends TestCase
                 'contact_person_phone' => '070-9999999',
                 'note' => 'Updated admin contact details.',
             ])
-            ->assertRedirect(route('admin.clubs.edit', $club))
+            ->assertRedirect(route('club-admin.clubs.edit', $club))
             ->assertSessionHas('status', 'Club updated.');
 
         $this->assertDatabaseHas('clubs', [
@@ -74,8 +74,9 @@ class ClubManagementTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->post(route('admin.clubs.memberships.store', $club), [
-                'member_id' => $member->id,
+            ->post(route('club-admin.clubs.memberships.store', $club), [
+                'name' => $member->name,
+                'email' => $member->email,
                 'role' => 'Board member',
                 'is_club_admin' => '1',
                 'is_paid' => '1',
@@ -83,7 +84,7 @@ class ClubManagementTest extends TestCase
                 'last_paid_on' => '2026-02-01',
                 'ends_on' => '2026-12-31',
             ])
-            ->assertRedirect(route('admin.clubs.edit', $club))
+            ->assertRedirect(route('club-admin.clubs.edit', $club))
             ->assertSessionHas('status', 'Club membership added.');
 
         $membership = $club->memberships()->firstOrFail();
@@ -100,15 +101,14 @@ class ClubManagementTest extends TestCase
         $this->assertSame($club->id, $member->main_club_id);
 
         $this->actingAs($admin)
-            ->put(route('admin.clubs.memberships.update', [$club, $membership]), [
-                'member_id' => $member->id,
+            ->put(route('club-admin.clubs.memberships.update', [$club, $membership]), [
                 'role' => 'Official',
                 'is_club_admin' => '0',
                 'joined_on' => '2026-01-15',
                 'last_paid_on' => '2026-03-01',
                 'ends_on' => '2027-01-31',
             ])
-            ->assertRedirect(route('admin.clubs.edit', $club))
+            ->assertRedirect(route('club-admin.clubs.edit', $club))
             ->assertSessionHas('status', 'Club membership updated.');
 
         $membership->refresh();
@@ -124,8 +124,8 @@ class ClubManagementTest extends TestCase
         $this->assertSame('2027-01-31', $membership->ends_on?->toDateString());
 
         $this->actingAs($admin)
-            ->delete(route('admin.clubs.memberships.destroy', [$club, $membership]))
-            ->assertRedirect(route('admin.clubs.edit', $club))
+            ->delete(route('club-admin.clubs.memberships.destroy', [$club, $membership]))
+            ->assertRedirect(route('club-admin.clubs.edit', $club))
             ->assertSessionHas('status', 'Club membership removed.');
 
         $this->assertDatabaseMissing('club_memberships', [
@@ -161,5 +161,58 @@ class ClubManagementTest extends TestCase
             'club_id' => $club->id,
             'member_id' => $member->id,
         ]);
+    }
+
+    public function test_club_administrator_can_manage_their_own_club_but_not_other_clubs(): void
+    {
+        $clubAdmin = User::factory()->create();
+        $managedMember = User::factory()->create([
+            'email' => 'managed@example.test',
+        ]);
+        $club = Club::factory()->create(['name' => 'Managed Club']);
+        $otherClub = Club::factory()->create(['name' => 'Other Club']);
+
+        $club->memberships()->create([
+            'member_id' => $clubAdmin->id,
+            'role' => 'Chairperson',
+            'is_club_admin' => true,
+            'is_paid' => true,
+            'joined_on' => '2026-01-01',
+        ]);
+
+        $club->memberships()->create([
+            'member_id' => $managedMember->id,
+            'role' => 'Member',
+            'is_club_admin' => false,
+            'is_paid' => true,
+            'joined_on' => '2026-01-02',
+        ]);
+
+        $this->actingAs($clubAdmin)
+            ->get(route('club-admin.clubs.edit', $club))
+            ->assertOk()
+            ->assertSee('Add member to '.$club->name)
+            ->assertDontSee('Choose member');
+
+        $this->actingAs($clubAdmin)
+            ->put(route('club-admin.clubs.memberships.update', [$club, $club->memberships()->where('member_id', $managedMember->id)->firstOrFail()]), [
+                'role' => 'Coach',
+                'is_club_admin' => '0',
+                'is_paid' => '1',
+                'joined_on' => '2026-01-02',
+                'last_paid_on' => '2026-03-01',
+                'ends_on' => '2026-12-31',
+            ])
+            ->assertRedirect(route('club-admin.clubs.edit', $club));
+
+        $this->assertDatabaseHas('club_memberships', [
+            'club_id' => $club->id,
+            'member_id' => $managedMember->id,
+            'role' => 'Coach',
+        ]);
+
+        $this->actingAs($clubAdmin)
+            ->get(route('club-admin.clubs.edit', $otherClub))
+            ->assertForbidden();
     }
 }

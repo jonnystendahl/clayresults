@@ -76,7 +76,12 @@
                             <div class="section-label mb-2">Your membership</div>
                             <h2 class="h3 fw-bold mb-0">Membership details for {{ $mainClub->name }}</h2>
                         </div>
-                        <a class="btn btn-outline-primary" href="{{ route('training-results.index') }}">Open results</a>
+                        <div class="d-flex gap-2 flex-wrap">
+                            @if ($canManageMainClub)
+                                <a class="btn btn-primary" href="{{ route('club-admin.clubs.edit', $mainClub) }}">Manage club</a>
+                            @endif
+                            <a class="btn btn-outline-primary" href="{{ route('training-results.index') }}">Open results</a>
+                        </div>
                     </div>
 
                     <div class="row g-3">
@@ -142,7 +147,7 @@
                             <h2 class="h3 fw-bold mb-0">Members in {{ $mainClub->name }}</h2>
                         </div>
                         @if ($canManageMainClub)
-                            <div class="text-secondary">Club administrators can set temporary passwords for members in this club.</div>
+                            <div class="text-secondary">Club administrators can manage this club, update members, and set temporary passwords.</div>
                         @endif
                     </div>
 

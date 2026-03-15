@@ -78,7 +78,7 @@
                                         <td>{{ $club->memberships_count }}</td>
                                         <td>
                                             <div class="d-flex justify-content-end gap-2">
-                                                <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.clubs.edit', $club) }}">Manage</a>
+                                                <a class="btn btn-sm btn-outline-primary" href="{{ route('club-admin.clubs.edit', $club) }}">Manage</a>
                                             </div>
                                         </td>
                                     </tr>

@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AuthorizesClubAdministration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClubRenewalDecisionRequest;
 use App\Http\Requests\ClubRenewalSettingRequest;
 use App\Models\Club;
 use App\Models\ClubRenewalRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClubRenewalController extends Controller
 {
-    public function edit(Club $club): View
+    use AuthorizesClubAdministration;
+
+    public function edit(Request $request, Club $club): View
     {
+        $this->ensureCanAdministerClub($request, $club);
+
         return view('admin.clubs.renewal.edit', [
             'club' => $club,
             'renewalSetting' => $club->renewalSetting()->firstOrNew(),
@@ -25,7 +31,7 @@ class ClubRenewalController extends Controller
     {
         $club->renewalSetting()->updateOrCreate([], $request->validated());
 
-        return redirect()->route('admin.clubs.renewal.edit', $club)->with('status', 'Renewal settings updated.');
+        return redirect()->route('club-admin.clubs.renewal.edit', $club)->with('status', 'Renewal settings updated.');
     }
 
     public function updateRequest(ClubRenewalDecisionRequest $request, Club $club, ClubRenewalRequest $renewalRequest): RedirectResponse
@@ -36,7 +42,7 @@ class ClubRenewalController extends Controller
 
         $item->update($validated);
 
-        return redirect()->route('admin.clubs.renewal.edit', $club)->with('status', 'Renewal request updated.');
+        return redirect()->route('club-admin.clubs.renewal.edit', $club)->with('status', 'Renewal request updated.');
     }
 
     private function renewalRequest(Club $club, ClubRenewalRequest $renewalRequest): ClubRenewalRequest

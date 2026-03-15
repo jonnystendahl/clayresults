@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Club;
 use App\Models\ClubMembership;
+use App\Models\Member;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -11,7 +12,10 @@ class ClubMembershipRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        /** @var Club $club */
+        $club = $this->route('club');
+
+        return $this->user()?->canAdministerClub($club) ?? false;
     }
 
     protected function prepareForValidation(): void
@@ -32,15 +36,32 @@ class ClubMembershipRequest extends FormRequest
         /** @var ClubMembership|null $clubMembership */
         $clubMembership = $this->route('clubMembership');
 
+        if ($clubMembership === null) {
+            return [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    'max:255',
+                    function (string $attribute, mixed $value, \Closure $fail) use ($club): void {
+                        $memberId = Member::query()->where('email', $value)->value('id');
+
+                        if ($memberId !== null && ClubMembership::query()->where('club_id', $club->id)->where('member_id', $memberId)->exists()) {
+                            $fail('This member already belongs to the club.');
+                        }
+                    },
+                ],
+                'role' => ['required', 'string', 'max:100'],
+                'is_club_admin' => ['required', 'boolean'],
+                'is_paid' => ['required', 'boolean'],
+                'joined_on' => ['required', 'date'],
+                'last_paid_on' => ['nullable', 'date', 'after_or_equal:joined_on'],
+                'ends_on' => ['nullable', 'date', 'after_or_equal:joined_on'],
+            ];
+        }
+
         return [
-            'member_id' => [
-                'required',
-                'integer',
-                Rule::exists('users', 'id'),
-                Rule::unique('club_memberships', 'member_id')
-                    ->where(fn ($query) => $query->where('club_id', $club->id))
-                    ->ignore($clubMembership),
-            ],
             'role' => ['required', 'string', 'max:100'],
             'is_club_admin' => ['required', 'boolean'],
             'is_paid' => ['required', 'boolean'],

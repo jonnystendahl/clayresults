@@ -7,7 +7,7 @@
                 <div class="section-label mb-2">Administration</div>
                 <h1 class="h2 fw-bold mb-3">Membership renewal</h1>
                 <p class="text-secondary mb-4">Configure the public/member-facing renewal page for {{ $club->name }}.</p>
-                <form method="POST" action="{{ route('admin.clubs.renewal.update', $club) }}" class="row g-3">
+                <form method="POST" action="{{ route('club-admin.clubs.renewal.update', $club) }}" class="row g-3">
                     @csrf
                     @method('PUT')
                     <div class="col-12"><label class="form-label fw-semibold" for="season_label">Season label</label><input class="form-control" id="season_label" name="season_label" type="text" value="{{ old('season_label', $renewalSetting->season_label) }}" placeholder="2026"></div>
@@ -18,7 +18,7 @@
                     <div class="col-md-6"><label class="form-label fw-semibold" for="renewal_deadline">Deadline</label><input class="form-control" id="renewal_deadline" name="renewal_deadline" type="date" value="{{ old('renewal_deadline', $renewalSetting->renewal_deadline?->toDateString()) }}"></div>
                     <div class="col-12"><label class="form-label fw-semibold" for="payment_details">Payment details</label><textarea class="form-control" id="payment_details" name="payment_details" rows="4">{{ old('payment_details', $renewalSetting->payment_details) }}</textarea></div>
                     <div class="col-12"><div class="form-check form-switch"><input class="form-check-input" id="renewal_is_open" name="is_open" type="checkbox" value="1" @checked(old('is_open', $renewalSetting->is_open))><label class="form-check-label" for="renewal_is_open">Renewal requests are open</label></div></div>
-                    <div class="col-12 d-flex justify-content-between"><a class="btn btn-outline-primary" href="{{ route('admin.clubs.edit', $club) }}">Back to club</a><button class="btn btn-primary" type="submit">Save renewal settings</button></div>
+                    <div class="col-12 d-flex justify-content-between"><a class="btn btn-outline-primary" href="{{ route('club-admin.clubs.edit', $club) }}">Back to club</a><button class="btn btn-primary" type="submit">Save renewal settings</button></div>
                 </form>
             </div>
         </div>
@@ -37,7 +37,7 @@
                                 <span class="badge text-bg-light border">{{ ucfirst($renewalRequest->status) }}</span>
                             </div>
                             <div class="text-secondary mb-3">{{ $renewalRequest->note ?: 'No note provided.' }}</div>
-                            <form method="POST" action="{{ route('admin.clubs.renewal.requests.update', [$club, $renewalRequest]) }}" class="row g-3 align-items-end">
+                            <form method="POST" action="{{ route('club-admin.clubs.renewal.requests.update', [$club, $renewalRequest]) }}" class="row g-3 align-items-end">
                                 @csrf
                                 @method('PUT')
                                 <div class="col-md-4"><label class="form-label fw-semibold" for="status-{{ $renewalRequest->id }}">Status</label><select class="form-select" id="status-{{ $renewalRequest->id }}" name="status"><option value="pending" @selected($renewalRequest->status === 'pending')>Pending</option><option value="approved" @selected($renewalRequest->status === 'approved')>Approved</option><option value="rejected" @selected($renewalRequest->status === 'rejected')>Rejected</option></select></div>

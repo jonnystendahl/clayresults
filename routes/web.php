@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\ClubManagementController;
 use App\Http\Controllers\Admin\ClubMembershipController;
@@ -9,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\RequiredPasswordChangeController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ClubMemberManagementController;
 use App\Http\Controllers\ClubMemberPasswordController;
 use App\Http\Controllers\ClubModuleController;
 use App\Http\Controllers\ClubSelectionController;
@@ -91,28 +91,16 @@ Route::middleware(['auth', 'password.changed', 'verified'])->group(function (): 
     Route::post('/clubs/{club}/members/{member}/temporary-password', [ClubMemberPasswordController::class, 'store'])->name('clubs.members.password.store');
     Route::post('/clubs/{club}/membership-renewal', [ClubModuleController::class, 'storeRenewalRequest'])->name('clubs.renewal.store');
 
-    Route::get('/results', [TrainingResultController::class, 'index'])->name('training-results.index');
-    Route::post('/results', [TrainingResultController::class, 'store'])->name('training-results.store');
-    Route::get('/results/{trainingResult}/edit', [TrainingResultController::class, 'edit'])->name('training-results.edit');
-    Route::put('/results/{trainingResult}', [TrainingResultController::class, 'update'])->name('training-results.update');
-    Route::delete('/results/{trainingResult}', [TrainingResultController::class, 'destroy'])->name('training-results.destroy');
-
-    Route::prefix('admin')->middleware('admin')->name('admin.')->group(function (): void {
-        Route::redirect('/users', '/admin/members');
-        Route::get('/members', [UserManagementController::class, 'index'])->name('members.index');
-        Route::get('/members/{member}/edit', [UserManagementController::class, 'edit'])->name('members.edit');
-        Route::put('/members/{member}', [UserManagementController::class, 'update'])->name('members.update');
-
-        Route::get('/clubs', [ClubManagementController::class, 'index'])->name('clubs.index');
-        Route::get('/clubs/create', [ClubManagementController::class, 'create'])->name('clubs.create');
-        Route::post('/clubs', [ClubManagementController::class, 'store'])->name('clubs.store');
-        Route::get('/clubs/{club}/edit', [ClubManagementController::class, 'edit'])->name('clubs.edit');
+    Route::prefix('club-admin')->name('club-admin.')->group(function (): void {
+        Route::get('/clubs/{club}', [ClubManagementController::class, 'edit'])->name('clubs.edit');
         Route::put('/clubs/{club}', [ClubManagementController::class, 'update'])->name('clubs.update');
-        Route::delete('/clubs/{club}', [ClubManagementController::class, 'destroy'])->name('clubs.destroy');
 
         Route::post('/clubs/{club}/memberships', [ClubMembershipController::class, 'store'])->name('clubs.memberships.store');
         Route::put('/clubs/{club}/memberships/{clubMembership}', [ClubMembershipController::class, 'update'])->name('clubs.memberships.update');
         Route::delete('/clubs/{club}/memberships/{clubMembership}', [ClubMembershipController::class, 'destroy'])->name('clubs.memberships.destroy');
+
+        Route::get('/clubs/{club}/members/{member}/edit', [ClubMemberManagementController::class, 'edit'])->name('clubs.members.edit');
+        Route::put('/clubs/{club}/members/{member}', [ClubMemberManagementController::class, 'update'])->name('clubs.members.update');
 
         Route::get('/clubs/{club}/news', [\App\Http\Controllers\Admin\ClubNewsPostController::class, 'index'])->name('clubs.news.index');
         Route::post('/clubs/{club}/news', [\App\Http\Controllers\Admin\ClubNewsPostController::class, 'store'])->name('clubs.news.store');
@@ -132,5 +120,20 @@ Route::middleware(['auth', 'password.changed', 'verified'])->group(function (): 
         Route::get('/clubs/{club}/renewal', [\App\Http\Controllers\Admin\ClubRenewalController::class, 'edit'])->name('clubs.renewal.edit');
         Route::put('/clubs/{club}/renewal', [\App\Http\Controllers\Admin\ClubRenewalController::class, 'update'])->name('clubs.renewal.update');
         Route::put('/clubs/{club}/renewal/{renewalRequest}', [\App\Http\Controllers\Admin\ClubRenewalController::class, 'updateRequest'])->name('clubs.renewal.requests.update');
+    });
+
+    Route::get('/results', [TrainingResultController::class, 'index'])->name('training-results.index');
+    Route::post('/results', [TrainingResultController::class, 'store'])->name('training-results.store');
+    Route::get('/results/{trainingResult}/edit', [TrainingResultController::class, 'edit'])->name('training-results.edit');
+    Route::put('/results/{trainingResult}', [TrainingResultController::class, 'update'])->name('training-results.update');
+    Route::delete('/results/{trainingResult}', [TrainingResultController::class, 'destroy'])->name('training-results.destroy');
+
+    Route::prefix('admin')->middleware('admin')->name('admin.')->group(function (): void {
+        Route::get('/clubs', [ClubManagementController::class, 'index'])->name('clubs.index');
+        Route::get('/clubs/create', [ClubManagementController::class, 'create'])->name('clubs.create');
+        Route::post('/clubs', [ClubManagementController::class, 'store'])->name('clubs.store');
+        Route::get('/clubs/{club}/edit', fn (Club $club) => redirect()->route('club-admin.clubs.edit', $club))->name('clubs.edit');
+        Route::put('/clubs/{club}', fn (Club $club) => redirect()->route('club-admin.clubs.update', $club))->name('clubs.update');
+        Route::delete('/clubs/{club}', [ClubManagementController::class, 'destroy'])->name('clubs.destroy');
     });
 });

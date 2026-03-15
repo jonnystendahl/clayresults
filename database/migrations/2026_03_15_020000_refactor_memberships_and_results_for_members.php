@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    private function usingSqlite(): bool
+    {
+        return DB::getDriverName() === 'sqlite';
+    }
+
     public function up(): void
     {
         $this->dropForeignIfExists('club_memberships', 'club_memberships_club_id_foreign');
@@ -130,6 +135,10 @@ return new class extends Migration
         string $onDelete,
         string $onUpdate,
     ): void {
+        if ($this->usingSqlite()) {
+            return;
+        }
+
         if ($this->hasForeignKey($table, $constraint)) {
             return;
         }
@@ -152,6 +161,14 @@ return new class extends Migration
             return;
         }
 
+        if ($this->usingSqlite()) {
+            Schema::table($table, function (Blueprint $blueprint) use ($columns, $index): void {
+                $blueprint->index($columns, $index);
+            });
+
+            return;
+        }
+
         DB::statement(sprintf(
             'ALTER TABLE `%s` ADD INDEX `%s` (%s)',
             $table,
@@ -166,6 +183,14 @@ return new class extends Migration
             return;
         }
 
+        if ($this->usingSqlite()) {
+            Schema::table($table, function (Blueprint $blueprint) use ($columns, $index): void {
+                $blueprint->unique($columns, $index);
+            });
+
+            return;
+        }
+
         DB::statement(sprintf(
             'ALTER TABLE `%s` ADD UNIQUE `%s` (%s)',
             $table,
@@ -176,6 +201,10 @@ return new class extends Migration
 
     private function dropForeignIfExists(string $table, string $constraint): void
     {
+        if ($this->usingSqlite()) {
+            return;
+        }
+
         if (! $this->hasForeignKey($table, $constraint)) {
             return;
         }
@@ -189,6 +218,14 @@ return new class extends Migration
             return;
         }
 
+        if ($this->usingSqlite()) {
+            Schema::table($table, function (Blueprint $blueprint) use ($index): void {
+                $blueprint->dropIndex($index);
+            });
+
+            return;
+        }
+
         DB::statement(sprintf('ALTER TABLE `%s` DROP INDEX `%s`', $table, $index));
     }
 
@@ -199,6 +236,10 @@ return new class extends Migration
 
     private function hasForeignKey(string $table, string $constraint): bool
     {
+        if ($this->usingSqlite()) {
+            return false;
+        }
+
         return DB::selectOne(
             'SELECT 1 FROM information_schema.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = ? AND CONSTRAINT_TYPE = ? LIMIT 1',
             [$table, $constraint, 'FOREIGN KEY'],
@@ -207,6 +248,11 @@ return new class extends Migration
 
     private function hasIndex(string $table, string $index): bool
     {
+        if ($this->usingSqlite()) {
+            return collect(DB::select(sprintf('PRAGMA index_list(%s)', DB::getPdo()->quote($table))))
+                ->contains(fn (object $item): bool => ($item->name ?? null) === $index);
+        }
+
         return DB::selectOne(
             'SELECT 1 FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ? LIMIT 1',
             [$table, $index],

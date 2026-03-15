@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AuthorizesClubAdministration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClubEventRequest;
 use App\Models\Club;
 use App\Models\ClubEvent;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClubEventController extends Controller
 {
-    public function index(Club $club): View
+    use AuthorizesClubAdministration;
+
+    public function index(Request $request, Club $club): View
     {
+        $this->ensureCanAdministerClub($request, $club);
+
         return view('admin.clubs.events.index', [
             'club' => $club,
             'events' => $club->events()->orderBy('starts_at')->get(),
@@ -23,7 +29,7 @@ class ClubEventController extends Controller
     {
         $club->events()->create($request->validated());
 
-        return redirect()->route('admin.clubs.events.index', $club)->with('status', 'Event saved.');
+        return redirect()->route('club-admin.clubs.events.index', $club)->with('status', 'Event saved.');
     }
 
     public function update(ClubEventRequest $request, Club $club, ClubEvent $event): RedirectResponse
@@ -31,7 +37,7 @@ class ClubEventController extends Controller
         $item = $this->event($club, $event);
         $item->update($request->validated());
 
-        return redirect()->route('admin.clubs.events.index', $club)->with('status', 'Event updated.');
+        return redirect()->route('club-admin.clubs.events.index', $club)->with('status', 'Event updated.');
     }
 
     public function destroy(Club $club, ClubEvent $event): RedirectResponse
@@ -39,7 +45,7 @@ class ClubEventController extends Controller
         $item = $this->event($club, $event);
         $item->delete();
 
-        return redirect()->route('admin.clubs.events.index', $club)->with('status', 'Event deleted.');
+        return redirect()->route('club-admin.clubs.events.index', $club)->with('status', 'Event deleted.');
     }
 
     private function event(Club $club, ClubEvent $event): ClubEvent

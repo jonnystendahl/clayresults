@@ -93,19 +93,27 @@ class ClubModulesTest extends TestCase
         $admin = User::factory()->admin()->create();
         $club = Club::factory()->create(['name' => 'South Trap Club']);
 
+        $club->memberships()->create([
+            'member_id' => $admin->id,
+            'role' => 'Chairperson',
+            'is_club_admin' => true,
+            'is_paid' => true,
+            'joined_on' => '2026-01-01',
+        ]);
+
         $this->actingAs($admin)
-            ->post(route('admin.clubs.news.store', $club), [
+            ->post(route('club-admin.clubs.news.store', $club), [
                 'title' => 'News title',
                 'excerpt' => 'Short note',
                 'body' => 'Longer text',
                 'published_at' => '2026-03-15 10:00',
             ])
-            ->assertRedirect(route('admin.clubs.news.index', $club));
+            ->assertRedirect(route('club-admin.clubs.news.index', $club));
 
         $newsPost = ClubNewsPost::query()->firstOrFail();
 
         $this->actingAs($admin)
-            ->post(route('admin.clubs.events.store', $club), [
+            ->post(route('club-admin.clubs.events.store', $club), [
                 'title' => 'Spring event',
                 'location' => 'Range B',
                 'description' => 'Event description',
@@ -113,12 +121,12 @@ class ClubModulesTest extends TestCase
                 'ends_at' => '2026-04-01 15:00',
                 'published_at' => '2026-03-20 08:00',
             ])
-            ->assertRedirect(route('admin.clubs.events.index', $club));
+            ->assertRedirect(route('club-admin.clubs.events.index', $club));
 
         $event = ClubEvent::query()->firstOrFail();
 
         $this->actingAs($admin)
-            ->post(route('admin.clubs.board.store', $club), [
+            ->post(route('club-admin.clubs.board.store', $club), [
                 'name' => 'Eva Official',
                 'title' => 'Secretary',
                 'email' => 'eva@example.test',
@@ -127,12 +135,12 @@ class ClubModulesTest extends TestCase
                 'sort_order' => 1,
                 'is_public' => '1',
             ])
-            ->assertRedirect(route('admin.clubs.board.index', $club));
+            ->assertRedirect(route('club-admin.clubs.board.index', $club));
 
         $boardMember = ClubBoardMember::query()->firstOrFail();
 
         $this->actingAs($admin)
-            ->put(route('admin.clubs.renewal.update', $club), [
+            ->put(route('club-admin.clubs.renewal.update', $club), [
                 'season_label' => '2026',
                 'title' => 'Renew 2026 membership',
                 'description' => 'Submit before deadline.',
@@ -142,7 +150,7 @@ class ClubModulesTest extends TestCase
                 'payment_details' => 'Swish 123 456 789',
                 'is_open' => '1',
             ])
-            ->assertRedirect(route('admin.clubs.renewal.edit', $club));
+            ->assertRedirect(route('club-admin.clubs.renewal.edit', $club));
 
         $this->assertDatabaseHas('club_news_posts', [
             'id' => $newsPost->id,
@@ -185,6 +193,14 @@ class ClubModulesTest extends TestCase
             'ends_on' => '2026-12-31',
         ]);
 
+        $club->memberships()->create([
+            'member_id' => $admin->id,
+            'role' => 'Chairperson',
+            'is_club_admin' => true,
+            'is_paid' => true,
+            'joined_on' => '2026-01-01',
+        ]);
+
         $club->renewalSetting()->create([
             'season_label' => '2026',
             'title' => 'Renew your membership',
@@ -214,11 +230,11 @@ class ClubModulesTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->put(route('admin.clubs.renewal.requests.update', [$club, $renewalRequest]), [
+            ->put(route('club-admin.clubs.renewal.requests.update', [$club, $renewalRequest]), [
                 'status' => 'approved',
                 'admin_note' => 'Payment received.',
             ])
-            ->assertRedirect(route('admin.clubs.renewal.edit', $club))
+            ->assertRedirect(route('club-admin.clubs.renewal.edit', $club))
             ->assertSessionHas('status', 'Renewal request updated.');
 
         $this->assertDatabaseHas('club_renewal_requests', [
@@ -226,5 +242,32 @@ class ClubModulesTest extends TestCase
             'status' => 'approved',
             'admin_note' => 'Payment received.',
         ]);
+    }
+
+    public function test_club_administrator_can_manage_modules_only_for_their_own_club(): void
+    {
+        $clubAdmin = User::factory()->create();
+        $club = Club::factory()->create(['name' => 'South Trap Club']);
+        $otherClub = Club::factory()->create(['name' => 'North Trap Club']);
+
+        $club->memberships()->create([
+            'member_id' => $clubAdmin->id,
+            'role' => 'Chairperson',
+            'is_club_admin' => true,
+            'is_paid' => true,
+            'joined_on' => '2026-01-01',
+        ]);
+
+        $this->actingAs($clubAdmin)
+            ->post(route('club-admin.clubs.news.store', $club), [
+                'title' => 'Club news',
+                'excerpt' => 'Club only',
+                'body' => 'Updated by club admin',
+            ])
+            ->assertRedirect(route('club-admin.clubs.news.index', $club));
+
+        $this->actingAs($clubAdmin)
+            ->get(route('club-admin.clubs.events.index', $otherClub))
+            ->assertForbidden();
     }
 }

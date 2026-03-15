@@ -2,22 +2,46 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AuthorizesClubAdministration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClubMembershipRequest;
 use App\Models\Club;
 use App\Models\ClubMembership;
+use App\Models\Member;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 
 class ClubMembershipController extends Controller
 {
+    use AuthorizesClubAdministration;
+
     public function store(ClubMembershipRequest $request, Club $club): RedirectResponse
     {
-        $membership = $club->memberships()->create($request->validated());
+        $validated = $request->validated();
+
+        $member = Member::query()->firstOrCreate(
+            ['email' => $validated['email']],
+            [
+                'name' => $validated['name'],
+                'password' => Str::random(40),
+                'must_change_password' => true,
+            ],
+        );
+
+        $membership = $club->memberships()->create([
+            'member_id' => $member->id,
+            'role' => $validated['role'],
+            'is_club_admin' => $validated['is_club_admin'],
+            'is_paid' => $validated['is_paid'],
+            'joined_on' => $validated['joined_on'],
+            'last_paid_on' => $validated['last_paid_on'] ?? null,
+            'ends_on' => $validated['ends_on'] ?? null,
+        ]);
 
         $membership->member->syncMainClub();
 
         return redirect()
-            ->route('admin.clubs.edit', $club)
+            ->route('club-admin.clubs.edit', $club)
             ->with('status', 'Club membership added.');
     }
 
@@ -28,7 +52,7 @@ class ClubMembershipController extends Controller
         $membership->update($request->validated());
 
         return redirect()
-            ->route('admin.clubs.edit', $club)
+            ->route('club-admin.clubs.edit', $club)
             ->with('status', 'Club membership updated.');
     }
 
@@ -42,7 +66,7 @@ class ClubMembershipController extends Controller
         $member->syncMainClub();
 
         return redirect()
-            ->route('admin.clubs.edit', $club)
+            ->route('club-admin.clubs.edit', $club)
             ->with('status', 'Club membership removed.');
     }
 

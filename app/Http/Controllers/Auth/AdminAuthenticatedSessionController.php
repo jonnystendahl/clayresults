@@ -58,6 +58,6 @@ class AdminAuthenticatedSessionController extends Controller
             return redirect()->route('password.change.edit');
         }
 
-        return redirect()->intended(route('admin.members.index'));
+        return redirect()->intended(route('admin.clubs.index'));
     }
 }

@@ -68,9 +68,12 @@
                                         <li><a class="dropdown-item" href="{{ route('clubs.board', $menuClub) }}">Board information</a></li>
                                         <li><a class="dropdown-item" href="{{ route('clubs.renewal', $menuClub) }}">Membership renewal</a></li>
                                     @endif
+                                    @if ($menuClub !== null && $navigationUser?->canAdministerClub($menuClub))
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="{{ route('club-admin.clubs.edit', $menuClub) }}">Manage this club</a></li>
+                                    @endif
                                     @if ($navigationUser?->isAdmin())
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="{{ route('admin.members.index') }}">Manage members</a></li>
                                         <li><a class="dropdown-item" href="{{ route('admin.clubs.index') }}">Manage clubs</a></li>
                                     @endif
                                     @if (app()->environment('local') && Route::has('dev.mail.index'))

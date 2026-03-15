@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\AuthorizesClubAdministration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ClubBoardMemberRequest;
 use App\Models\Club;
 use App\Models\ClubBoardMember;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClubBoardMemberController extends Controller
 {
-    public function index(Club $club): View
+    use AuthorizesClubAdministration;
+
+    public function index(Request $request, Club $club): View
     {
+        $this->ensureCanAdministerClub($request, $club);
+
         return view('admin.clubs.board.index', [
             'club' => $club,
             'boardMembers' => $club->boardMembers()->get(),
@@ -23,7 +29,7 @@ class ClubBoardMemberController extends Controller
     {
         $club->boardMembers()->create($request->validated());
 
-        return redirect()->route('admin.clubs.board.index', $club)->with('status', 'Board entry saved.');
+        return redirect()->route('club-admin.clubs.board.index', $club)->with('status', 'Board entry saved.');
     }
 
     public function update(ClubBoardMemberRequest $request, Club $club, ClubBoardMember $boardMember): RedirectResponse
@@ -31,7 +37,7 @@ class ClubBoardMemberController extends Controller
         $item = $this->boardMember($club, $boardMember);
         $item->update($request->validated());
 
-        return redirect()->route('admin.clubs.board.index', $club)->with('status', 'Board entry updated.');
+        return redirect()->route('club-admin.clubs.board.index', $club)->with('status', 'Board entry updated.');
     }
 
     public function destroy(Club $club, ClubBoardMember $boardMember): RedirectResponse
@@ -39,7 +45,7 @@ class ClubBoardMemberController extends Controller
         $item = $this->boardMember($club, $boardMember);
         $item->delete();
 
-        return redirect()->route('admin.clubs.board.index', $club)->with('status', 'Board entry deleted.');
+        return redirect()->route('club-admin.clubs.board.index', $club)->with('status', 'Board entry deleted.');
     }
 
     private function boardMember(Club $club, ClubBoardMember $boardMember): ClubBoardMember

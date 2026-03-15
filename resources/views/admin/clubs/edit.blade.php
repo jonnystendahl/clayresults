@@ -9,10 +9,10 @@
                         <div class="section-label mb-2">Administration</div>
                         <h1 class="h2 fw-bold mb-0">Edit club</h1>
                     </div>
-                    <a class="btn btn-outline-primary" href="{{ route('admin.clubs.index') }}">Back to clubs</a>
+                    <a class="btn btn-outline-primary" href="{{ $canDeleteClub ? route('admin.clubs.index') : route('home') }}">{{ $canDeleteClub ? 'Back to clubs' : 'Back to home' }}</a>
                 </div>
 
-                <form method="POST" action="{{ route('admin.clubs.update', $club) }}" class="row g-3">
+                <form method="POST" action="{{ route('club-admin.clubs.update', $club) }}" class="row g-3">
                     @csrf
                     @method('PUT')
 
@@ -69,11 +69,13 @@
                     </div>
                 </form>
 
-                <form method="POST" action="{{ route('admin.clubs.destroy', $club) }}" class="mt-3 pt-3 border-top">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-outline-secondary" type="submit" onclick="return confirm('Delete this club and all memberships?');">Delete club</button>
-                </form>
+                @if ($canDeleteClub)
+                    <form method="POST" action="{{ route('admin.clubs.destroy', $club) }}" class="mt-3 pt-3 border-top">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-secondary" type="submit" onclick="return confirm('Delete this club and all memberships?');">Delete club</button>
+                    </form>
+                @endif
             </div>
         </div>
 
@@ -87,10 +89,10 @@
                 </div>
 
                 <div class="row g-3">
-                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.news.index', $club) }}"><div class="fw-semibold mb-2">News posts</div><div class="text-secondary">Publish club news shown on the public club site.</div></a></div>
-                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.events.index', $club) }}"><div class="fw-semibold mb-2">Events</div><div class="text-secondary">Manage competitions, training nights, and meetings.</div></a></div>
-                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.board.index', $club) }}"><div class="fw-semibold mb-2">Board information</div><div class="text-secondary">Publish public board and official contact entries.</div></a></div>
-                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('admin.clubs.renewal.edit', $club) }}"><div class="fw-semibold mb-2">Membership renewal</div><div class="text-secondary">Configure renewal deadlines, fees, and review requests.</div></a></div>
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('club-admin.clubs.news.index', $club) }}"><div class="fw-semibold mb-2">News posts</div><div class="text-secondary">Publish club news shown on the public club site.</div></a></div>
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('club-admin.clubs.events.index', $club) }}"><div class="fw-semibold mb-2">Events</div><div class="text-secondary">Manage competitions, training nights, and meetings.</div></a></div>
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('club-admin.clubs.board.index', $club) }}"><div class="fw-semibold mb-2">Board information</div><div class="text-secondary">Publish public board and official contact entries.</div></a></div>
+                    <div class="col-md-6"><a class="result-card p-4 h-100 d-block text-decoration-none text-reset" href="{{ route('club-admin.clubs.renewal.edit', $club) }}"><div class="fw-semibold mb-2">Membership renewal</div><div class="text-secondary">Configure renewal deadlines, fees, and review requests.</div></a></div>
                 </div>
             </div>
 
@@ -103,20 +105,24 @@
                     <div class="text-secondary">{{ $memberships->count() }} tracked memberships</div>
                 </div>
 
-                <form method="POST" action="{{ route('admin.clubs.memberships.store', $club) }}" class="row g-3">
+                <form method="POST" action="{{ route('club-admin.clubs.memberships.store', $club) }}" class="row g-3">
                     @csrf
 
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold" for="member_id">Member</label>
-                        <select class="form-select @error('member_id') is-invalid @enderror" id="member_id" name="member_id" required>
-                            <option value="">Choose member</option>
-                            @foreach ($members as $member)
-                                <option value="{{ $member->id }}" @selected(old('member_id') == $member->id)>{{ $member->name }} ({{ $member->email }})</option>
-                            @endforeach
-                        </select>
-                        @error('member_id')
+                        <label class="form-label fw-semibold" for="name">Member name</label>
+                        <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" type="text" value="{{ old('name') }}" required>
+                        @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="email">Member email</label>
+                        <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" type="email" value="{{ old('email') }}" required>
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">If the email already exists in KlubbManager, that account will be connected to this club without exposing other club memberships.</div>
                     </div>
 
                     <div class="col-md-6">
@@ -217,11 +223,9 @@
                                     </div>
                                 </div>
 
-                                <form method="POST" action="{{ route('admin.clubs.memberships.update', [$club, $membership]) }}" class="row g-3 align-items-end">
+                                <form method="POST" action="{{ route('club-admin.clubs.memberships.update', [$club, $membership]) }}" class="row g-3 align-items-end">
                                     @csrf
                                     @method('PUT')
-
-                                    <input name="member_id" type="hidden" value="{{ $membership->member_id }}">
 
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold" for="role-{{ $membership->id }}">Role</label>
@@ -257,12 +261,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 d-flex justify-content-md-end">
+                                    <div class="col-md-12 d-flex justify-content-md-between gap-2 flex-wrap">
+                                        <a class="btn btn-outline-primary" href="{{ route('club-admin.clubs.members.edit', [$club, $membership->member]) }}">Edit member</a>
                                         <button class="btn btn-primary" type="submit">Save membership</button>
                                     </div>
                                 </form>
 
-                                <form method="POST" action="{{ route('admin.clubs.memberships.destroy', [$club, $membership]) }}" class="mt-3 d-flex justify-content-end">
+                                <form method="POST" action="{{ route('club-admin.clubs.memberships.destroy', [$club, $membership]) }}" class="mt-3 d-flex justify-content-end">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-outline-secondary" type="submit" onclick="return confirm('Remove this membership?');">Remove</button>
